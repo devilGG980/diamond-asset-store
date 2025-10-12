@@ -1,46 +1,139 @@
-# Getting Started with Create React App
+# diamond-asset-store
+>>>>>>> 962472b48129174cceb5de5ec003008fbcc2569c
+# Diamond Assets Store
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A professional video editing assets marketplace with an integrated thumbnail editor. Built with React, Firebase, and Fabric.js.
+
+## Features
+
+- 🎨 **Thumbnail Editor** - Professional canvas-based editor with Fabric.js
+- 💎 **Diamond Currency System** - Earn and spend diamonds on premium assets
+- 🔥 **Asset Marketplace** - Video transitions, effects, and editing resources
+- 📱 **Responsive Design** - Optimized for all screen sizes
+- 🔐 **Firebase Authentication** - Secure user management
+- 💾 **Real-time Database** - Dynamic content and user data
+
+## Tech Stack
+
+- React 19 with TypeScript
+- Firebase (Auth, Firestore, Storage)
+- Fabric.js for canvas editing
+- Tailwind CSS for styling
+- Zustand for state management
+- Framer Motion for animations
+
+## Getting Started
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and uses Craco for configuration.
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/devilGG980/diamond-asset-store.git
+
+# Navigate to project directory
+cd diamond-asset-store
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+```
 
 ## Available Scripts
 
-In the project directory, you can run:
-
 ### `npm start`
 
-Runs the app in the development mode.\
+Runs the app in development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in interactive watch mode.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds the app for production to the `build` folder.
+Optimized and minified for best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `npm run analyze`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Analyzes the bundle size and dependencies.
 
-### `npm run eject`
+## Project Structure
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+src/
+├── components/
+│   ├── editor/          # Thumbnail editor components
+│   ├── layout/          # Navigation and sidebar
+│   └── ui/              # Reusable UI components
+├── pages/               # Main application pages
+├── contexts/            # React contexts (Auth, etc.)
+├── services/            # API and database services
+└── config/              # Configuration files
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Key Features
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Thumbnail Editor
+- Canvas-based editing with Fabric.js
+- Text, image, and shape tools
+- Layers and properties panels
+- Export functionality
+- Optimized for 100% browser zoom
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Diamond System
+- Watch ads to earn diamonds
+- Purchase premium assets
+- Real-time balance updates
+- Transaction history
 
-## Learn More
+### Asset Marketplace
+- Browse video editing assets
+- Preview before purchase
+- Download high-quality files
+- Regular content updates
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Environment Setup
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Create a `.env` file in the root directory with your Firebase configuration:
+
+```env
+REACT_APP_FIREBASE_API_KEY=your_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, email support@diamondassets.com or join our Discord community.
+
+---
+
+**Diamond Assets Store** - Professional video editing resources at your fingertips! 💎
+=======
+# diamond-asset-store
+>>>>>>> 962472b48129174cceb5de5ec003008fbcc2569c
