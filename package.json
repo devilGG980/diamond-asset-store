@@ -64,6 +64,10 @@
       "last 1 safari version"
     ]
   },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
