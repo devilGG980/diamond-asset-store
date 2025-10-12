@@ -1,5 +1,4 @@
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import React, { useEffect } from 'react';
 
 interface PageSEOProps {
   title: string;
@@ -59,77 +58,67 @@ const PageSEO: React.FC<PageSEOProps> = ({
     }))
   } : null;
 
-  return (
-    <Helmet>
-      {/* Basic Meta Tags */}
-      <title>{fullTitle}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={seoKeywords} />
-      <meta name="author" content="Video Forge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      
-      {/* Canonical URL */}
-      <link rel="canonical" href={currentUrl} />
-      
-      {/* Robots */}
-      {noIndex ? (
-        <meta name="robots" content="noindex, nofollow" />
-      ) : (
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-      )}
-      
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content={pageType} />
-      <meta property="og:url" content={currentUrl} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={imageUrl} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:site_name" content="Video Forge" />
-      <meta property="og:locale" content="en_US" />
-      
-      {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={currentUrl} />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={imageUrl} />
-      <meta name="twitter:creator" content="@VideoForge" />
-      <meta name="twitter:site" content="@VideoForge" />
-      
-      {/* Additional SEO meta tags */}
-      <meta name="theme-color" content="#6B46C1" />
-      <meta name="apple-mobile-web-app-capable" content="yes" />
-      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-      <meta name="format-detection" content="telephone=no" />
-      
-      {/* Language and region */}
-      <meta name="language" content="English" />
-      <meta name="geo.region" content="US" />
-      <meta name="geo.placename" content="United States" />
-      
-      {/* Structured Data */}
-      {structuredData && (
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData, null, 2)}
-        </script>
-      )}
-      
-      {/* Breadcrumb structured data */}
-      {breadcrumbStructuredData && (
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbStructuredData, null, 2)}
-        </script>
-      )}
-      
-      {/* Preconnect for performance */}
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link rel="dns-prefetch" href="//www.google-analytics.com" />
-      <link rel="dns-prefetch" href="//pagead2.googlesyndication.com" />
-    </Helmet>
-  );
+  useEffect(() => {
+    // Update document head
+    document.title = fullTitle;
+    
+    // Update meta tags
+    const updateMeta = (name: string, content: string, isProperty = false) => {
+      let meta = document.querySelector(`meta[${isProperty ? 'property' : 'name'}="${name}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        if (isProperty) {
+          meta.setAttribute('property', name);
+        } else {
+          meta.setAttribute('name', name);
+        }
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+
+    // Basic meta tags
+    updateMeta('description', description);
+    updateMeta('keywords', seoKeywords);
+    updateMeta('author', 'Video Forge');
+    updateMeta('robots', noIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+    
+    // Open Graph
+    updateMeta('og:type', pageType, true);
+    updateMeta('og:url', currentUrl, true);
+    updateMeta('og:title', title, true);
+    updateMeta('og:description', description, true);
+    updateMeta('og:image', imageUrl, true);
+    updateMeta('og:site_name', 'Video Forge', true);
+    
+    // Twitter Card
+    updateMeta('twitter:card', 'summary_large_image');
+    updateMeta('twitter:title', title);
+    updateMeta('twitter:description', description);
+    updateMeta('twitter:image', imageUrl);
+    
+    // Canonical link
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', currentUrl);
+    
+    // Structured data
+    if (structuredData) {
+      let structuredDataScript = document.querySelector('script[type="application/ld+json"]');
+      if (!structuredDataScript) {
+        structuredDataScript = document.createElement('script');
+        structuredDataScript.setAttribute('type', 'application/ld+json');
+        document.head.appendChild(structuredDataScript);
+      }
+      structuredDataScript.textContent = JSON.stringify(structuredData, null, 2);
+    }
+  }, [fullTitle, description, seoKeywords, currentUrl, title, imageUrl, pageType, noIndex, structuredData]);
+
+  return null;
 };
 
 export default PageSEO;

@@ -1,5 +1,4 @@
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import React, { useEffect } from 'react';
 
 interface AssetSEOProps {
   title: string;
@@ -77,33 +76,62 @@ const AssetSEO: React.FC<AssetSEOProps> = ({
     };
   }
 
-  return (
-    <Helmet>
-      {/* Basic Meta Tags */}
-      <title>{pageTitle}</title>
-      <meta name="description" content={pageDescription} />
-      <meta name="keywords" content={`free video editing assets, ${category.toLowerCase()} assets, video editing resources, ${title}, YouTube editing, ${tags.join(', ')}`} />
-      <link rel="canonical" href={pageUrl} />
-      
-      {/* Open Graph */}
-      <meta property="og:title" content={`${title} - Free Video Editing Asset`} />
-      <meta property="og:description" content={pageDescription} />
-      <meta property="og:image" content={imageUrl || `https://videoforges.web.app/thumbnails/${title.toLowerCase().replace(/\s+/g, '-')}.png`} />
-      <meta property="og:url" content={pageUrl} />
-      <meta property="og:type" content="product" />
-      
-      {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={`${title} - Free Video Editing Asset`} />
-      <meta name="twitter:description" content={pageDescription} />
-      <meta name="twitter:image" content={imageUrl || `https://videoforges.web.app/thumbnails/${title.toLowerCase().replace(/\s+/g, '-')}.png`} />
-      
-      {/* Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify(schemaMarkup, null, 2)}
-      </script>
-    </Helmet>
-  );
+  useEffect(() => {
+    // Update document head
+    document.title = pageTitle;
+    
+    // Update meta tags
+    const updateMeta = (name: string, content: string, isProperty = false) => {
+      let meta = document.querySelector(`meta[${isProperty ? 'property' : 'name'}="${name}"]`);
+      if (!meta) {
+        meta = document.createElement('meta');
+        if (isProperty) {
+          meta.setAttribute('property', name);
+        } else {
+          meta.setAttribute('name', name);
+        }
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+
+    // Basic meta tags
+    updateMeta('description', pageDescription);
+    updateMeta('keywords', `free video editing assets, ${category.toLowerCase()} assets, video editing resources, ${title}, YouTube editing, ${tags.join(', ')}`);
+    
+    // Open Graph
+    updateMeta('og:title', `${title} - Free Video Editing Asset`, true);
+    updateMeta('og:description', pageDescription, true);
+    updateMeta('og:image', imageUrl || `https://videoforges.web.app/thumbnails/${title.toLowerCase().replace(/\s+/g, '-')}.png`, true);
+    updateMeta('og:url', pageUrl, true);
+    updateMeta('og:type', 'product', true);
+    
+    // Twitter Card
+    updateMeta('twitter:card', 'summary_large_image');
+    updateMeta('twitter:title', `${title} - Free Video Editing Asset`);
+    updateMeta('twitter:description', pageDescription);
+    updateMeta('twitter:image', imageUrl || `https://videoforges.web.app/thumbnails/${title.toLowerCase().replace(/\s+/g, '-')}.png`);
+    
+    // Canonical link
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', pageUrl);
+    
+    // Structured data
+    let structuredData = document.querySelector('script[type="application/ld+json"]');
+    if (!structuredData) {
+      structuredData = document.createElement('script');
+      structuredData.setAttribute('type', 'application/ld+json');
+      document.head.appendChild(structuredData);
+    }
+    structuredData.textContent = JSON.stringify(schemaMarkup, null, 2);
+  }, [pageTitle, pageDescription, pageUrl, title, category, tags, imageUrl, schemaMarkup]);
+
+  return null;
 };
 
 export default AssetSEO;

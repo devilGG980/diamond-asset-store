@@ -22,7 +22,7 @@ interface Layer {
 }
 
 const LayersPanel: React.FC = () => {
-  const { canvas, setActiveObject, deleteActiveObject } = useEditorStore();
+  const { canvas, setActiveObject } = useEditorStore();
   const [layers, setLayers] = useState<Layer[]>([]);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
 
