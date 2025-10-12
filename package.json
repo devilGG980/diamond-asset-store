@@ -39,11 +39,11 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "build:netlify": "craco build",
     "test": "craco test",
     "analyze": "set ANALYZE=true && craco build",
     "optimize-images": "node scripts/optimize-images.js",
     "generate-sitemap": "node scripts/generate-sitemap.js",
-    "prebuild": "npm run optimize-images && npm run generate-sitemap",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

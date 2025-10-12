@@ -1,22 +1,25 @@
 [build]
   base = "."
   publish = "build"
-  command = "npm run build"
+  command = "npm ci --legacy-peer-deps && CI=false npm run build:netlify"
 
 [build.environment]
   NPM_FLAGS = "--legacy-peer-deps"
   NODE_VERSION = "18"
+  SKIP_PREFLIGHT_CHECK = "true"
+  CI = "false"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = true
 
 [context.production]
-  command = "npm ci --legacy-peer-deps && npm run build"
+  command = "npm ci --legacy-peer-deps && CI=false npm run build:netlify"
 
 [context.deploy-preview]
-  command = "npm ci --legacy-peer-deps && npm run build"
+  command = "npm ci --legacy-peer-deps && CI=false npm run build:netlify"
 
 [context.branch-deploy]
-  command = "npm ci --legacy-peer-deps && npm run build"
+  command = "npm ci --legacy-peer-deps && CI=false npm run build:netlify"
