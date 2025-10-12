@@ -1,0 +1,6 @@
+# ads.txt file for Video Forge - Free Video Editing Assets
+# This file helps ensure proper ad monetization and prevents unauthorized ad serving
+
+# No active ad networks currently configured
+# Additional authorized ad networks can be added here
+# Format: domain, publisher_id, relationship_type, certification_authority_id

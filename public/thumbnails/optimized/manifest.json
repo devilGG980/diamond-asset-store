@@ -1,0 +1,482 @@
+{
+  "animation 4": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 4.png",
+        "size": 71123
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 4.webp",
+        "size": 9992
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 4@2x.png",
+        "size": 289779
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 4@2x.webp",
+        "size": 23286
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 4_thumb.png",
+        "size": 17688
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 4_thumb.webp",
+        "size": 3834
+      }
+    }
+  },
+  "animation 5": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 5.png",
+        "size": 62558
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 5.webp",
+        "size": 8814
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 5@2x.png",
+        "size": 263812
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 5@2x.webp",
+        "size": 21138
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 5_thumb.png",
+        "size": 19013
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 5_thumb.webp",
+        "size": 3776
+      }
+    }
+  },
+  "animation 6": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 6.png",
+        "size": 81495
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 6.webp",
+        "size": 16774
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 6@2x.png",
+        "size": 298201
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 6@2x.webp",
+        "size": 63384
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 6_thumb.png",
+        "size": 21809
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 6_thumb.webp",
+        "size": 4670
+      }
+    }
+  },
+  "animation 7": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 7.png",
+        "size": 8739
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 7.webp",
+        "size": 4390
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 7@2x.png",
+        "size": 20678
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 7@2x.webp",
+        "size": 8696
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 7_thumb.png",
+        "size": 2948
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 7_thumb.webp",
+        "size": 2256
+      }
+    }
+  },
+  "animation 8": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 8.png",
+        "size": 50631
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 8.webp",
+        "size": 5688
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 8@2x.png",
+        "size": 227276
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 8@2x.webp",
+        "size": 14342
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/animation 8_thumb.png",
+        "size": 11668
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation 8_thumb.webp",
+        "size": 2116
+      }
+    }
+  },
+  "animation1": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/animation1.png",
+        "size": 864
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation1.webp",
+        "size": 1004
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/animation1@2x.png",
+        "size": 1850
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation1@2x.webp",
+        "size": 2242
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/animation1_thumb.png",
+        "size": 455
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation1_thumb.webp",
+        "size": 350
+      }
+    }
+  },
+  "animation2": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/animation2.png",
+        "size": 46727
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation2.webp",
+        "size": 6970
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/animation2@2x.png",
+        "size": 195251
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation2@2x.webp",
+        "size": 14138
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/animation2_thumb.png",
+        "size": 11814
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation2_thumb.webp",
+        "size": 3436
+      }
+    }
+  },
+  "animation3": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/animation3.png",
+        "size": 62743
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation3.webp",
+        "size": 4864
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/animation3@2x.png",
+        "size": 321117
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation3@2x.webp",
+        "size": 9220
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/animation3_thumb.png",
+        "size": 11727
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation3_thumb.webp",
+        "size": 2582
+      }
+    }
+  },
+  "animation4": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/animation4.png",
+        "size": 864
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation4.webp",
+        "size": 1004
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/animation4@2x.png",
+        "size": 1850
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation4@2x.webp",
+        "size": 2242
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/animation4_thumb.png",
+        "size": 455
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/animation4_thumb.webp",
+        "size": 350
+      }
+    }
+  },
+  "background 1": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/background 1.png",
+        "size": 24474
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/background 1.webp",
+        "size": 7548
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/background 1@2x.png",
+        "size": 82533
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/background 1@2x.webp",
+        "size": 18556
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/background 1_thumb.png",
+        "size": 6970
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/background 1_thumb.webp",
+        "size": 2422
+      }
+    }
+  },
+  "background 2": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/background 2.png",
+        "size": 60978
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/background 2.webp",
+        "size": 4646
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/background 2@2x.png",
+        "size": 272354
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/background 2@2x.webp",
+        "size": 11636
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/background 2_thumb.png",
+        "size": 14909
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/background 2_thumb.webp",
+        "size": 1982
+      }
+    }
+  },
+  "background 3": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/background 3.png",
+        "size": 36688
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/background 3.webp",
+        "size": 8902
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/background 3@2x.png",
+        "size": 121603
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/background 3@2x.webp",
+        "size": 22006
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/background 3_thumb.png",
+        "size": 11608
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/background 3_thumb.webp",
+        "size": 3222
+      }
+    }
+  },
+  "transition 1": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/transition 1.png",
+        "size": 34265
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/transition 1.webp",
+        "size": 3108
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/transition 1@2x.png",
+        "size": 126921
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/transition 1@2x.webp",
+        "size": 6852
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/transition 1_thumb.png",
+        "size": 9025
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/transition 1_thumb.webp",
+        "size": 1654
+      }
+    }
+  },
+  "transition 2": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/transition 2.png",
+        "size": 17115
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/transition 2.webp",
+        "size": 946
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/transition 2@2x.png",
+        "size": 103739
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/transition 2@2x.webp",
+        "size": 2882
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/transition 2_thumb.png",
+        "size": 281
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/transition 2_thumb.webp",
+        "size": 412
+      }
+    }
+  },
+  "transition 3": {
+    "medium": {
+      "png": {
+        "path": "/thumbnails/optimized/transition 3.png",
+        "size": 1177
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/transition 3.webp",
+        "size": 1092
+      }
+    },
+    "large": {
+      "png": {
+        "path": "/thumbnails/optimized/transition 3@2x.png",
+        "size": 2368
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/transition 3@2x.webp",
+        "size": 2544
+      }
+    },
+    "thumbnail": {
+      "png": {
+        "path": "/thumbnails/optimized/transition 3_thumb.png",
+        "size": 721
+      },
+      "webp": {
+        "path": "/thumbnails/optimized/transition 3_thumb.webp",
+        "size": 568
+      }
+    }
+  }
+}

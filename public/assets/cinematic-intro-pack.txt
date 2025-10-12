@@ -1,0 +1,15 @@
+# Cinematic Intro Pack
+
+This is a placeholder file for the Cinematic Intro Pack asset.
+
+In a real implementation, this would be a ZIP file containing:
+- 10 different cinematic intro templates
+- After Effects project files (.aep)
+- Rendered preview videos
+- Font files and instructions
+- License documentation
+
+File size: ~124 MB
+Format: After Effects Project
+Category: Intros
+Price: 250 Diamonds
