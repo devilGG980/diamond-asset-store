@@ -53,11 +53,14 @@ export const isConfigured = (): boolean => {
 };
 
 // Development helper - logs configuration status
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
   console.log('Supabase Configuration Status:', {
     configured: isConfigured(),
     url: supabaseUrl.includes('supabase.co') ? '✅ Valid URL' : '❌ Invalid URL',
-    key: supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY' ? '✅ Key set' : '❌ Key not set'
+    key: supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY' ? '✅ Key set' : '❌ Key not set',
+    env: process.env.NODE_ENV,
+    actualUrl: supabaseUrl,
+    keyLength: supabaseAnonKey.length
   });
   
   if (!isConfigured()) {
