@@ -8,6 +8,8 @@
   NODE_VERSION = "18"
   SKIP_PREFLIGHT_CHECK = "true"
   CI = "false"
+  REACT_APP_SUPABASE_URL = "https://tjweurkohrlojifststk.supabase.co"
+  REACT_APP_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqd2V1cmtvaHJsb2ppZnN0c3RrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyNTQ3NjAsImV4cCI6MjA3NTgzMDc2MH0.lpZYLOzQYV8kxIkd2_mslfCHGuxvBDorwTURR0_ICYg"
 
 [[redirects]]
   from = "/*"
