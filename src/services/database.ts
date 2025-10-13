@@ -1,8 +1,7 @@
-// Firebase Realtime Database Service
+// Supabase Database Service
 // Handles all user data operations for Diamond Assets Store
 
-import { ref, set, get, update, push } from 'firebase/database';
-import { db, auth } from '../register';
+import { supabase } from '../config/supabase';
 
 // Purchase record with download count
 export interface PurchaseRecord {
@@ -28,29 +27,36 @@ export interface UserProfile {
 
 // Create user profile when they first sign up
 export const createUserProfile = async (user: any): Promise<void> => {
-  const userRef = ref(db, `users/${user.uid}`);
-  
   // Check if user already exists
-  const snapshot = await get(userRef);
-  if (snapshot.exists()) {
+  const { data: existingProfile, error: fetchError } = await supabase
+    .from('users')
+    .select('*')
+    .eq('uid', user.id)
+    .single();
+  
+  if (existingProfile) {
     console.log('User profile already exists');
     return;
   }
 
   // Create new user profile
-  const userProfile: UserProfile = {
-    uid: user.uid,
+  const userProfile: Omit<UserProfile, 'createdAt'> & { createdAt: string } = {
+    uid: user.id,
     email: user.email,
-    displayName: user.displayName || user.email.split('@')[0],
+    displayName: user.user_metadata?.displayName || user.email.split('@')[0],
     diamondBalance: 0, // No starting diamonds
     purchasedAssets: [], // Keep for backward compatibility
     downloadPurchases: [], // New download-limited purchase system
     adsWatchedToday: 0,
-    createdAt: Date.now()
+    createdAt: new Date().toISOString()
   };
 
   try {
-    await set(userRef, userProfile);
+    const { error } = await supabase
+      .from('users')
+      .insert([userProfile]);
+    
+    if (error) throw error;
     console.log('User profile created successfully');
   } catch (error) {
     console.error('Error creating user profile:', error);
@@ -61,13 +67,26 @@ export const createUserProfile = async (user: any): Promise<void> => {
 // Get user profile
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
   try {
-    const userRef = ref(db, `users/${uid}`);
-    const snapshot = await get(userRef);
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('uid', uid)
+      .single();
     
-    if (snapshot.exists()) {
-      return snapshot.val() as UserProfile;
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // Row not found
+        return null;
+      }
+      throw error;
     }
-    return null;
+    
+    // Convert string createdAt to number for compatibility
+    if (data && typeof data.createdAt === 'string') {
+      data.createdAt = new Date(data.createdAt).getTime();
+    }
+    
+    return data as UserProfile;
   } catch (error) {
     console.error('Error getting user profile:', error);
     throw error;
@@ -77,24 +96,26 @@ export const getUserProfile = async (uid: string): Promise<UserProfile | null> =
 // Find user by username
 export const findUserByUsername = async (username: string): Promise<UserProfile | null> => {
   try {
-    const usersRef = ref(db, 'users');
-    const snapshot = await get(usersRef);
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .ilike('displayName', username)
+      .single();
     
-    if (!snapshot.exists()) {
-      return null;
-    }
-    
-    const users = snapshot.val();
-    
-    // Search through all users for matching displayName (username)
-    for (const uid in users) {
-      const user = users[uid] as UserProfile;
-      if (user.displayName?.toLowerCase() === username.toLowerCase()) {
-        return user;
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // Row not found
+        return null;
       }
+      throw error;
     }
     
-    return null;
+    // Convert string createdAt to number for compatibility
+    if (data && typeof data.createdAt === 'string') {
+      data.createdAt = new Date(data.createdAt).getTime();
+    }
+    
+    return data as UserProfile;
   } catch (error) {
     console.error('Error finding user by username:', error);
     throw error;
@@ -104,8 +125,12 @@ export const findUserByUsername = async (username: string): Promise<UserProfile 
 // Update user's diamond balance
 export const updateDiamondBalance = async (uid: string, newBalance: number): Promise<void> => {
   try {
-    const userRef = ref(db, `users/${uid}`);
-    await update(userRef, { diamondBalance: newBalance });
+    const { error } = await supabase
+      .from('users')
+      .update({ diamondBalance: newBalance })
+      .eq('uid', uid);
+    
+    if (error) throw error;
     console.log('Diamond balance updated successfully');
   } catch (error) {
     console.error('Error updating diamond balance:', error);
@@ -116,14 +141,15 @@ export const updateDiamondBalance = async (uid: string, newBalance: number): Pro
 // Add purchased asset to user's collection with 2-download limit
 export const addPurchasedAsset = async (uid: string, assetId: string, cost: number): Promise<void> => {
   try {
-    const userRef = ref(db, `users/${uid}`);
-    const userSnapshot = await get(userRef);
+    const { data: userData, error: fetchError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('uid', uid)
+      .single();
     
-    if (!userSnapshot.exists()) {
+    if (fetchError || !userData) {
       throw new Error('User profile not found');
     }
-    
-    const userData = userSnapshot.val() as UserProfile;
     
     // Check if user has enough diamonds
     if (userData.diamondBalance < cost) {
@@ -134,7 +160,7 @@ export const addPurchasedAsset = async (uid: string, assetId: string, cost: numb
     const currentDownloadPurchases = userData.downloadPurchases || [];
     
     // Check if asset already has active downloads remaining
-    const existingPurchase = currentDownloadPurchases.find(purchase => purchase.assetId === assetId);
+    const existingPurchase = currentDownloadPurchases.find((purchase: PurchaseRecord) => purchase.assetId === assetId);
     if (existingPurchase && existingPurchase.downloadsUsed < existingPurchase.maxDownloads) {
       throw new Error('Asset already purchased with downloads remaining');
     }
@@ -151,16 +177,20 @@ export const addPurchasedAsset = async (uid: string, assetId: string, cost: numb
     };
     
     // Remove old purchase record if it exists (downloads exhausted)
-    const updatedDownloadPurchases = currentDownloadPurchases.filter(purchase => purchase.assetId !== assetId);
+    const updatedDownloadPurchases = currentDownloadPurchases.filter((purchase: PurchaseRecord) => purchase.assetId !== assetId);
     updatedDownloadPurchases.push(newPurchase);
     
     const newBalance = userData.diamondBalance - cost;
     
-    await update(userRef, {
-      downloadPurchases: updatedDownloadPurchases,
-      diamondBalance: newBalance
-    });
+    const { error } = await supabase
+      .from('users')
+      .update({
+        downloadPurchases: updatedDownloadPurchases,
+        diamondBalance: newBalance
+      })
+      .eq('uid', uid);
     
+    if (error) throw error;
     console.log('Asset purchased successfully with 2-download limit');
   } catch (error) {
     console.error('Error purchasing asset:', error);
@@ -171,14 +201,16 @@ export const addPurchasedAsset = async (uid: string, assetId: string, cost: numb
 // Reward diamonds for watching ads
 export const rewardDiamonds = async (uid: string, rewardAmount: number): Promise<void> => {
   try {
-    const userRef = ref(db, `users/${uid}`);
-    const userSnapshot = await get(userRef);
+    const { data: userData, error: fetchError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('uid', uid)
+      .single();
     
-    if (!userSnapshot.exists()) {
+    if (fetchError || !userData) {
       throw new Error('User profile not found');
     }
     
-    const userData = userSnapshot.val() as UserProfile;
     const today = new Date().toDateString();
     const lastAdWatch = userData.lastAdWatch ? new Date(userData.lastAdWatch).toDateString() : '';
     
@@ -194,12 +226,16 @@ export const rewardDiamonds = async (uid: string, rewardAmount: number): Promise
     }
     
     // Update user data
-    await update(userRef, {
-      diamondBalance: userData.diamondBalance + rewardAmount,
-      adsWatchedToday: adsWatchedToday + 1,
-      lastAdWatch: Date.now()
-    });
+    const { error } = await supabase
+      .from('users')
+      .update({
+        diamondBalance: userData.diamondBalance + rewardAmount,
+        adsWatchedToday: adsWatchedToday + 1,
+        lastAdWatch: Date.now()
+      })
+      .eq('uid', uid);
     
+    if (error) throw error;
     console.log('Diamonds rewarded successfully');
   } catch (error) {
     console.error('Error rewarding diamonds:', error);
@@ -238,18 +274,20 @@ export const getRemainingDownloads = (userProfile: UserProfile, assetId: string)
 // Record a download and update the count
 export const recordDownload = async (uid: string, assetId: string): Promise<void> => {
   try {
-    const userRef = ref(db, `users/${uid}`);
-    const userSnapshot = await get(userRef);
+    const { data: userData, error: fetchError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('uid', uid)
+      .single();
     
-    if (!userSnapshot.exists()) {
+    if (fetchError || !userData) {
       throw new Error('User profile not found');
     }
     
-    const userData = userSnapshot.val() as UserProfile;
     const currentDownloadPurchases = userData.downloadPurchases || [];
     
     // Find the purchase record
-    const purchaseIndex = currentDownloadPurchases.findIndex(purchase => purchase.assetId === assetId);
+    const purchaseIndex = currentDownloadPurchases.findIndex((purchase: PurchaseRecord) => purchase.assetId === assetId);
     if (purchaseIndex === -1) {
       throw new Error('No purchase record found for this asset');
     }
@@ -266,10 +304,14 @@ export const recordDownload = async (uid: string, assetId: string): Promise<void
       downloadsUsed: purchase.downloadsUsed + 1
     };
     
-    await update(userRef, {
-      downloadPurchases: updatedPurchases
-    });
+    const { error } = await supabase
+      .from('users')
+      .update({
+        downloadPurchases: updatedPurchases
+      })
+      .eq('uid', uid);
     
+    if (error) throw error;
     console.log(`Download recorded. ${purchase.maxDownloads - purchase.downloadsUsed - 1} downloads remaining.`);
   } catch (error) {
     console.error('Error recording download:', error);
@@ -280,24 +322,31 @@ export const recordDownload = async (uid: string, assetId: string): Promise<void
 // Clean exhausted download purchases from user profile
 export const cleanExhaustedPurchases = async (uid: string): Promise<void> => {
   try {
-    const userRef = ref(db, `users/${uid}`);
-    const userSnapshot = await get(userRef);
+    const { data: userData, error: fetchError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('uid', uid)
+      .single();
     
-    if (!userSnapshot.exists()) {
+    if (fetchError || !userData) {
       return;
     }
     
-    const userData = userSnapshot.val() as UserProfile;
     const currentDownloadPurchases = userData.downloadPurchases || [];
     
     // Keep only purchases with downloads remaining
-    const activePurchases = currentDownloadPurchases.filter(purchase => purchase.downloadsUsed < purchase.maxDownloads);
+    const activePurchases = currentDownloadPurchases.filter((purchase: PurchaseRecord) => purchase.downloadsUsed < purchase.maxDownloads);
     
     // Only update if there were exhausted purchases to remove
     if (activePurchases.length !== currentDownloadPurchases.length) {
-      await update(userRef, {
-        downloadPurchases: activePurchases
-      });
+      const { error } = await supabase
+        .from('users')
+        .update({
+          downloadPurchases: activePurchases
+        })
+        .eq('uid', uid);
+      
+      if (error) throw error;
       console.log('Exhausted download purchases cleaned up');
     }
   } catch (error) {
@@ -307,18 +356,22 @@ export const cleanExhaustedPurchases = async (uid: string): Promise<void> => {
 
 // Get current user's profile (helper function)
 export const getCurrentUserProfile = async (): Promise<UserProfile | null> => {
-  const currentUser = auth.currentUser;
-  if (!currentUser) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
     return null;
   }
-  return await getUserProfile(currentUser.uid);
+  return await getUserProfile(user.id);
 };
 
 // Update user display name
 export const updateDisplayName = async (uid: string, displayName: string): Promise<void> => {
   try {
-    const userRef = ref(db, `users/${uid}`);
-    await update(userRef, { displayName });
+    const { error } = await supabase
+      .from('users')
+      .update({ displayName })
+      .eq('uid', uid);
+    
+    if (error) throw error;
     console.log('Display name updated successfully');
   } catch (error) {
     console.error('Error updating display name:', error);

@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEditorStore } from './useEditorStore';
 import { useAuth } from '../../contexts/AuthContext';
-import { ref, runTransaction, get } from 'firebase/database';
-import { database } from '../../config/firebase';
 import { saveAs } from 'file-saver';
 import toast from 'react-hot-toast';
 import {
@@ -21,7 +19,7 @@ interface DownloadModalProps {
 
 const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
   const { canvas } = useEditorStore();
-  const { currentUser, userProfile } = useAuth();
+  const { currentUser, userProfile, updateUserDiamonds } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string>('');
 
@@ -45,52 +43,17 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
       return;
     }
 
+    if (!userProfile) {
+      toast.error('User profile not loaded');
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
-      const userRef = ref(database, `users/${currentUser.uid}`);
+      const currentDiamonds = userProfile.diamondBalance;
 
-      // Use Firebase transaction for atomic diamond deduction
-      const result = await runTransaction(userRef, (userData) => {
-        if (!userData) {
-          // User data doesn't exist yet, create it
-          return {
-            diamonds: 0,
-            history: {},
-          };
-        }
-
-        const currentDiamonds = userData.diamonds || 0;
-
-        if (currentDiamonds < DOWNLOAD_COST) {
-          // Not enough diamonds - abort transaction
-          return undefined;
-        }
-
-        // Deduct diamonds and log transaction
-        const newDiamonds = currentDiamonds - DOWNLOAD_COST;
-        const transactionId = `tx_${Date.now()}`;
-        
-        const newHistory = userData.history || {};
-        newHistory[transactionId] = {
-          type: 'thumbnail_download',
-          amount: -DOWNLOAD_COST,
-          time: Date.now(),
-          description: 'Downloaded custom thumbnail',
-        };
-
-        return {
-          ...userData,
-          diamonds: newDiamonds,
-          history: newHistory,
-        };
-      });
-
-      if (!result.committed) {
-        // Transaction was aborted - not enough diamonds
-        const userSnapshot = await get(userRef);
-        const currentDiamonds = userSnapshot.val()?.diamonds || 0;
-        
+      if (currentDiamonds < DOWNLOAD_COST) {
         toast.error(
           `Not enough diamonds! You have ${currentDiamonds}💎, need ${DOWNLOAD_COST}💎`,
           { duration: 4000 }
@@ -99,7 +62,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
         return;
       }
 
-      // Transaction successful - proceed with download
+      // Download first
       const dataUrl = canvas.toDataURL({
         format: 'png',
         quality: 1,
@@ -117,8 +80,12 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
       // Download using FileSaver.js
       saveAs(blob, filename);
 
+      // Update diamonds using AuthContext
+      await updateUserDiamonds(-DOWNLOAD_COST);
+
+      const newBalance = currentDiamonds - DOWNLOAD_COST;
       toast.success(
-        `✅ Thumbnail downloaded! ${DOWNLOAD_COST}💎 deducted. New balance: ${result.snapshot.val().diamonds}💎`,
+        `✅ Thumbnail downloaded! ${DOWNLOAD_COST}💎 deducted. New balance: ${newBalance}💎`,
         { duration: 5000 }
       );
 

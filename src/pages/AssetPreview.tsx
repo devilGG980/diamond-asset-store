@@ -55,7 +55,7 @@ const AssetPreview: React.FC = () => {
       }
       
       // Clean exhausted purchases
-      cleanExhaustedPurchases(currentUser.uid);
+      cleanExhaustedPurchases(currentUser.id);
     }
   }, [asset, currentUser, userProfile, navigate]);
   
@@ -97,7 +97,7 @@ const AssetPreview: React.FC = () => {
     
     try {
       // Record the download
-      await recordDownload(currentUser.uid, asset.id.toString());
+      await recordDownload(currentUser.id, asset.id.toString());
       
       // Update remaining downloads
       const newRemainingDownloads = remainingDownloads - 1;

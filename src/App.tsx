@@ -18,6 +18,10 @@ const LoginTest = lazy(() => import('./pages/LoginTest'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const ThumbnailEditor = lazy(() => import('./components/editor/ThumbnailEditor'));
 
+// Auth pages
+const Login = lazy(() => import('./components/auth/Login'));
+const Signup = lazy(() => import('./components/auth/Signup'));
+
 // SEO and AdSense compliance pages
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
@@ -56,6 +60,10 @@ const AppLayout: React.FC = () => {
               <Route path="/admin" element={<AdminPanel />} />
               <Route path="/login-test" element={<LoginTest />} />
               <Route path="/editor" element={<ThumbnailEditor />} />
+
+              {/* Auth pages */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
 
               {/* SEO and AdSense compliance pages */}
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />

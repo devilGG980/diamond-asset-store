@@ -1,15 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {
-  User,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  signInWithPopup,
-  updateProfile
-} from 'firebase/auth';
-import { auth } from '../register';
-import { GoogleAuthProvider, signInWithPopup as firebaseSignInWithPopup } from 'firebase/auth';
+import { supabase } from '../config/supabase';
+import type { User } from '@supabase/supabase-js';
 import { 
   createUserProfile, 
   getUserProfile as getDbUserProfile, 
@@ -47,23 +38,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<DbUserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  
-  // Initialize Google provider
-  const googleProvider = new GoogleAuthProvider();
 
   // Create user profile wrapper
   const createUserProfileWrapper = async (user: User, username?: string) => {
     console.log('AuthContext - Creating profile for user:', user.email);
     try {
       console.log('AuthContext - Calling createUserProfile...');
-      await createUserProfile({
-        ...user,
-        displayName: username || user.displayName
-      });
+      
+      // Update user metadata if username is provided
+      if (username) {
+        await supabase.auth.updateUser({
+          data: { displayName: username }
+        });
+      }
+      
+      await createUserProfile(user);
       
       // Get the created profile
       console.log('AuthContext - Getting created profile...');
-      const profile = await getDbUserProfile(user.uid);
+      const profile = await getDbUserProfile(user.id);
       console.log('AuthContext - Retrieved profile:', profile);
       if (profile) {
         setUserProfile(profile);
@@ -76,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('AuthContext - Error creating user profile:', error);
       // If profile already exists, just get it
       console.log('AuthContext - Trying to get existing profile...');
-      const profile = await getDbUserProfile(user.uid);
+      const profile = await getDbUserProfile(user.id);
       console.log('AuthContext - Existing profile:', profile);
       if (profile) {
         setUserProfile(profile);
@@ -85,12 +78,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Get user profile from Realtime Database
+  // Get user profile from Database
   const getUserProfile = async () => {
     if (!currentUser) return;
     
     try {
-      const profile = await getDbUserProfile(currentUser.uid);
+      const profile = await getDbUserProfile(currentUser.id);
       if (profile) {
         setUserProfile(profile);
       }
@@ -109,7 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error('Insufficient diamonds');
     }
 
-    await updateDiamondBalance(currentUser.uid, newBalance);
+    await updateDiamondBalance(currentUser.id, newBalance);
     setUserProfile({ ...userProfile, diamondBalance: newBalance });
   };
   
@@ -117,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const purchaseAsset = async (assetId: string, cost: number) => {
     if (!currentUser) throw new Error('User not authenticated');
     
-    await addPurchasedAsset(currentUser.uid, assetId, cost);
+    await addPurchasedAsset(currentUser.id, assetId, cost);
     
     // Refresh user profile
     await getUserProfile();
@@ -126,10 +119,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Sign up with email and password
   const signup = async (email: string, password: string, username: string) => {
     try {
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(user, { displayName: username });
-      await createUserProfileWrapper(user, username);
-      toast.success('Account created successfully!');
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            displayName: username
+          }
+        }
+      });
+      
+      if (error) throw error;
+      if (data.user) {
+        await createUserProfileWrapper(data.user, username);
+        toast.success('Account created successfully!');
+      }
     } catch (error: any) {
       toast.error(error.message || 'Failed to create account');
       throw error;
@@ -159,26 +163,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('Input detected as email:', email);
       }
       
-      console.log('Attempting Firebase Auth login...');
-      const { user } = await signInWithEmailAndPassword(auth, email, password);
-      console.log('Firebase Auth successful for:', user.email);
-      await createUserProfileWrapper(user);
-      toast.success('Welcome back!');
+      console.log('Attempting Supabase Auth login...');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) throw error;
+      
+      console.log('Supabase Auth successful for:', data.user?.email);
+      if (data.user) {
+        await createUserProfileWrapper(data.user);
+        toast.success('Welcome back!');
+      }
     } catch (error: any) {
-      console.error('Login error:', error.code, error.message);
+      console.error('Login error:', error.message);
       
       if (error.message === 'Username not found') {
         toast.error('Username not found. Please check your username.');
-      } else if (error.code === 'auth/invalid-credential') {
+      } else if (error.message.includes('Invalid login credentials')) {
         toast.error('Invalid email or password. Please check your credentials.');
-      } else if (error.code === 'auth/user-not-found') {
-        toast.error('No account found with this email. Please sign up first.');
-      } else if (error.code === 'auth/wrong-password') {
-        toast.error('Incorrect password. Please try again.');
-      } else if (error.code === 'auth/invalid-email') {
-        toast.error('Invalid email format. Please enter a valid email.');
-      } else if (error.code === 'auth/user-disabled') {
-        toast.error('This account has been disabled. Please contact support.');
+      } else if (error.message.includes('Email not confirmed')) {
+        toast.error('Please verify your email address.');
       } else {
         toast.error('Failed to login. Please try again.');
       }
@@ -189,9 +195,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Login with Google
   const loginWithGoogle = async () => {
     try {
-      const { user } = await firebaseSignInWithPopup(auth, googleProvider);
-      await createUserProfileWrapper(user);
-      toast.success('Welcome!');
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      
+      if (error) throw error;
+      // User will be redirected to Google, and profile will be created on return
+      toast.success('Redirecting to Google...');
     } catch (error: any) {
       toast.error(error.message || 'Failed to login with Google');
       throw error;
@@ -201,7 +214,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Logout
   const logout = async () => {
     try {
-      await signOut(auth);
+      await supabase.auth.signOut();
       setUserProfile(null);
       toast.success('Logged out successfully');
     } catch (error: any) {
@@ -212,7 +225,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Listen for auth state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const user = session?.user || null;
       console.log('AuthContext - Auth state changed. User:', user?.email || 'No user');
       setCurrentUser(user);
       
@@ -220,7 +234,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('AuthContext - User logged in, fetching profile...');
         // Get user profile directly here instead of calling getUserProfile
         try {
-          const profile = await getDbUserProfile(user.uid);
+          const profile = await getDbUserProfile(user.id);
           console.log('AuthContext - Profile fetched:', profile);
           if (profile) {
             setUserProfile(profile);
@@ -240,7 +254,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     });
 
-    return unsubscribe;
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const value: AuthContextType = {

@@ -46,18 +46,6 @@ const PageSEO: React.FC<PageSEOProps> = ({
     ...keywords
   ].join(', ');
 
-  // Breadcrumb structured data
-  const breadcrumbStructuredData = breadcrumbs.length > 0 ? {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": breadcrumbs.map((crumb, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "name": crumb.name,
-      "item": crumb.url.startsWith('http') ? crumb.url : `https://videoforges.web.app${crumb.url}`
-    }))
-  } : null;
-
   useEffect(() => {
     // Update document head
     document.title = fullTitle;

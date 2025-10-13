@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { findUserByUsername, getUserProfile } from '../services/database';
-import { ref, get } from 'firebase/database';
-import { db } from '../register';
+import { supabase } from '../config/supabase';
 
 const LoginTest: React.FC = () => {
   const [testResult, setTestResult] = useState<string>('');
@@ -10,13 +9,18 @@ const LoginTest: React.FC = () => {
   const testDatabaseConnection = async () => {
     try {
       setTestResult('Testing database connection...');
-      const usersRef = ref(db, 'users');
-      const snapshot = await get(usersRef);
+      const { data: users, error } = await supabase
+        .from('users')
+        .select('*');
       
-      if (snapshot.exists()) {
-        const users = snapshot.val();
-        const userCount = Object.keys(users).length;
-        const userList = Object.values(users).map((user: any) => ({
+      if (error) {
+        setTestResult(`❌ Database error: ${error.message}`);
+        return;
+      }
+      
+      if (users && users.length > 0) {
+        const userCount = users.length;
+        const userList = users.map(user => ({
           email: user.email,
           displayName: user.displayName,
           uid: user.uid

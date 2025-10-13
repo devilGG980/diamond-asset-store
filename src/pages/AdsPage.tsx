@@ -106,7 +106,7 @@ const AdsPage: React.FC = () => {
 
     try {
       // Use Realtime Database rewardDiamonds function
-      await rewardDiamonds(currentUser.uid, adSlot.reward);
+      await rewardDiamonds(currentUser.id, adSlot.reward);
       await getUserProfile();
       
       setEarnedToday(prev => prev + adSlot.reward);

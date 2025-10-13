@@ -101,7 +101,7 @@ const QuickAds: React.FC = () => {
       // Auto-reward after 10 seconds (assuming they subscribed)
       setTimeout(async () => {
         try {
-          await rewardDiamonds(currentUser!.uid, offer.reward);
+          await rewardDiamonds(currentUser!.id, offer.reward);
           await getUserProfile();
           setTotalEarnedToday(prev => prev + offer.reward);
           toast.success(`🎉 Earned ${offer.reward} diamonds for subscribing!`);
@@ -152,7 +152,7 @@ const QuickAds: React.FC = () => {
         return;
       }
       
-      await rewardDiamonds(currentUser!.uid, offer.reward);
+      await rewardDiamonds(currentUser!.id, offer.reward);
       await getUserProfile();
       
       // Track total earned for stats

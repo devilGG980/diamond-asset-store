@@ -1,8 +1,6 @@
-# diamond-asset-store
->>>>>>> 962472b48129174cceb5de5ec003008fbcc2569c
 # Diamond Assets Store
 
-A professional video editing assets marketplace with an integrated thumbnail editor. Built with React, Firebase, and Fabric.js.
+A professional video editing assets marketplace with an integrated thumbnail editor. Built with React, Supabase, and Fabric.js.
 
 ## Features
 
@@ -10,13 +8,13 @@ A professional video editing assets marketplace with an integrated thumbnail edi
 - 💎 **Diamond Currency System** - Earn and spend diamonds on premium assets
 - 🔥 **Asset Marketplace** - Video transitions, effects, and editing resources
 - 📱 **Responsive Design** - Optimized for all screen sizes
-- 🔐 **Firebase Authentication** - Secure user management
-- 💾 **Real-time Database** - Dynamic content and user data
+- 🔐 **Supabase Authentication** - Secure user management
+- 💾 **PostgreSQL Database** - Reliable and scalable data storage
 
 ## Tech Stack
 
 - React 19 with TypeScript
-- Firebase (Auth, Firestore, Storage)
+- Supabase (Auth, Database)
 - Fabric.js for canvas editing
 - Tailwind CSS for styling
 - Zustand for state management
@@ -104,16 +102,18 @@ src/
 
 ## Environment Setup
 
-Create a `.env` file in the root directory with your Firebase configuration:
-
-```env
-REACT_APP_FIREBASE_API_KEY=your_api_key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
-REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-REACT_APP_FIREBASE_APP_ID=your_app_id
+1. Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
 ```
+
+2. Update the `.env` file with your Supabase credentials:
+```env
+REACT_APP_SUPABASE_URL=https://your-project-id.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=your-anon-key-here
+```
+
+3. Set up your Supabase database by following the instructions in [SUPABASE_SETUP.md](SUPABASE_SETUP.md)
 
 ## Contributing
 
@@ -133,6 +133,8 @@ For support, email support@diamondassets.com or join our Discord community.
 
 ---
 
+# diamond-asset-store
+>>>>>>> 962472b48129174cceb5de5ec003008fbcc2569c
 **Diamond Assets Store** - Professional video editing resources at your fingertips! 💎
 =======
 # diamond-asset-store

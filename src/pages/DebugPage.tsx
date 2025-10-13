@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { auth, db } from '../register';
-import { onAuthStateChanged } from 'firebase/auth';
-import { ref, get } from 'firebase/database';
+import { supabase } from '../config/supabase';
 
 const DebugPage: React.FC = () => {
   const [authStatus, setAuthStatus] = useState<string>('Checking...');
@@ -10,13 +8,30 @@ const DebugPage: React.FC = () => {
 
   useEffect(() => {
     // Test Authentication
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const user = session?.user;
       if (user) {
         setAuthStatus('✅ User is logged in');
         setCurrentUser({
-          uid: user.uid,
+          uid: user.id,
           email: user.email,
-          displayName: user.displayName
+          displayName: user.user_metadata?.displayName
+        });
+      } else {
+        setAuthStatus('❌ No user logged in');
+        setCurrentUser(null);
+      }
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const user = session?.user;
+      if (user) {
+        setAuthStatus('✅ User is logged in');
+        setCurrentUser({
+          uid: user.id,
+          email: user.email,
+          displayName: user.user_metadata?.displayName
         });
       } else {
         setAuthStatus('❌ No user logged in');
@@ -27,10 +42,17 @@ const DebugPage: React.FC = () => {
     // Test Database Connection
     const testDatabase = async () => {
       try {
-        const dbRef = ref(db, '/');
-        const snapshot = await get(dbRef);
-        setDbStatus('✅ Database connection successful');
-        console.log('Database data:', snapshot.val());
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .limit(1);
+        
+        if (error) {
+          setDbStatus(`❌ Database error: ${error.message}`);
+        } else {
+          setDbStatus('✅ Database connection successful');
+          console.log('Database data:', data);
+        }
       } catch (error) {
         setDbStatus(`❌ Database error: ${error}`);
         console.error('Database error:', error);
@@ -39,7 +61,9 @@ const DebugPage: React.FC = () => {
 
     testDatabase();
 
-    return unsubscribe;
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (
@@ -50,11 +74,11 @@ const DebugPage: React.FC = () => {
         <div className="grid gap-6">
           {/* Firebase Config Status */}
           <div className="card">
-            <h2 className="text-2xl font-bold mb-4">🔥 Firebase Configuration</h2>
+            <h2 className="text-2xl font-bold mb-4">🚀 Supabase Configuration</h2>
             <div className="space-y-2">
-              <p><strong>Project ID:</strong> {process.env.NODE_ENV}</p>
-              <p><strong>Auth Domain:</strong> videoforges.firebaseapp.com</p>
-              <p><strong>Database URL:</strong> https://videoforges-default-rtdb.asia-southeast1.firebasedatabase.app/</p>
+              <p><strong>Environment:</strong> {process.env.NODE_ENV}</p>
+              <p><strong>Supabase URL:</strong> {process.env.REACT_APP_SUPABASE_URL || 'Not configured'}</p>
+              <p><strong>Auth Status:</strong> {process.env.REACT_APP_SUPABASE_ANON_KEY ? '✅ Key configured' : '❌ Key missing'}</p>
             </div>
           </div>
 

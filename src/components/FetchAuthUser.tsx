@@ -2,19 +2,27 @@
 // src/components/FetchAuthUser.tsx
 
 import React from 'react';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import { auth } from '../firebase';
+import { supabase } from '../config/supabase';
+import type { User } from '@supabase/supabase-js';
 
 /**
- * Custom hook that subscribes to Firebase auth state and returns the current user (or null).
+ * Custom hook that subscribes to Supabase auth state and returns the current user (or null).
  */
-const FetchAuthUser = (): firebase.User | null => {
-  const [user, setUser] = React.useState<firebase.User | null>(null);
+const FetchAuthUser = (): User | null => {
+  const [user, setUser] = React.useState<User | null>(null);
 
   React.useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((u) => setUser(u));
-    return () => unsubscribe();
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   return user;
