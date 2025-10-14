@@ -67,6 +67,7 @@ export const createUserProfile = async (user: any): Promise<void> => {
 // Get user profile
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
   try {
+    console.log('Database - Getting user profile for UID:', uid);
     const { data, error } = await supabase
       .from('users')
       .select('*')
@@ -74,12 +75,16 @@ export const getUserProfile = async (uid: string): Promise<UserProfile | null> =
       .single();
     
     if (error) {
+      console.log('Database - Error fetching user profile:', error);
       if (error.code === 'PGRST116') {
         // Row not found
+        console.log('Database - User profile not found for UID:', uid);
         return null;
       }
       throw error;
     }
+    
+    console.log('Database - User profile fetched:', data);
     
     // Convert string createdAt to number for compatibility
     if (data && typeof data.createdAt === 'string') {

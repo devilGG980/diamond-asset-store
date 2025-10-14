@@ -43,10 +43,13 @@ const Login: React.FC = () => {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
+      console.log('Initiating Google login...');
       await loginWithGoogle();
       // Note: Google login redirects, so we don't navigate here
+      console.log('Google login initiated, redirecting to Google OAuth flow');
     } catch (error: any) {
       console.error('Google login error:', error);
+      toast.error(error.message || 'Failed to login with Google. Please try again.');
       setLoading(false);
     }
   };

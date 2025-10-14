@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
+import DiamondBalance from '../ui/DiamondBalance';
 import {
   HomeIcon,
   ShoppingBagIcon,
@@ -114,37 +115,7 @@ const Navbar: React.FC = () => {
           {/* User Actions */}
           <div className="flex items-center space-x-4">
             {/* Diamond Balance */}
-            {currentUser && userProfile && (
-              <Link
-                to="/ads"
-                className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-4 py-2 rounded-full hover:from-yellow-400 hover:to-yellow-500 transition-all duration-200 transform hover:scale-105 shadow-lg"
-              >
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.1, 1],
-                    rotate: [0, 5, -5, 0]
-                  }}
-                  transition={{ 
-                    duration: 2, 
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="text-lg"
-                >
-                  💎
-                </motion.div>
-                <motion.span
-                  key={userProfile.diamondBalance}
-                  initial={{ scale: 1.2 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="font-bold text-lg"
-                >
-                  {userProfile.diamondBalance?.toLocaleString() || '0'}
-                </motion.span>
-                <span className="text-sm font-medium hidden sm:inline">Diamonds</span>
-              </Link>
-            )}
+            {currentUser && <DiamondBalance />}
             
             {currentUser && userProfile && (
               <div className="flex items-center space-x-3">
@@ -186,30 +157,9 @@ const Navbar: React.FC = () => {
         {/* Mobile Navigation */}
         <div className="md:hidden pb-4">
           {/* Mobile Diamond Balance */}
-          {currentUser && userProfile && (
-            <div className="mb-4">
-              <Link
-                to="/ads"
-                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-6 py-3 rounded-full shadow-lg mx-4"
-              >
-                <motion.div
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="text-xl"
-                >
-                  💎
-                </motion.div>
-                <motion.span
-                  key={userProfile.diamondBalance}
-                  initial={{ scale: 1.1 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="font-bold text-xl"
-                >
-                  {userProfile.diamondBalance?.toLocaleString() || '0'}
-                </motion.span>
-                <span className="text-sm font-medium">Diamonds</span>
-              </Link>
+          {currentUser && (
+            <div className="mb-4 px-4">
+              <DiamondBalance />
             </div>
           )}
           

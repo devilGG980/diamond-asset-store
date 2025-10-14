@@ -38,6 +38,7 @@ const AppLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
+      {/* Removed DiamondBalance from here since it's now in the Navbar */}
       <div className="flex min-h-screen">
         {/* Main content */}
         <main className={`flex-1 min-h-screen pt-12 md:pt-0 ${

@@ -195,10 +195,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Login with Google
   const loginWithGoogle = async () => {
     try {
+      // For development, we might need to specify the redirect URL explicitly
+      const redirectUrl = `${window.location.origin}/`;
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin
+          redirectTo: redirectUrl,
+          skipBrowserRedirect: false // This ensures the browser redirects properly
         }
       });
       
@@ -206,7 +210,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // User will be redirected to Google, and profile will be created on return
       toast.success('Redirecting to Google...');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to login with Google');
+      console.error('Google login error:', error);
+      toast.error(error.message || 'Failed to login with Google. Please check the console for details.');
       throw error;
     }
   };
@@ -228,6 +233,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       const user = session?.user || null;
       console.log('AuthContext - Auth state changed. User:', user?.email || 'No user');
+      console.log('AuthContext - Event:', event);
       setCurrentUser(user);
       
       if (user) {
@@ -240,7 +246,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUserProfile(profile);
             console.log('AuthContext - Profile set in state');
           } else {
-            console.log('AuthContext - No profile found for user');
+            console.log('AuthContext - No profile found for user, creating one...');
+            // If no profile exists, create one
+            await createUserProfileWrapper(user);
           }
         } catch (error) {
           console.error('AuthContext - Error getting user profile:', error);
@@ -257,7 +265,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, []); // Keep empty dependency array as this should only subscribe once
+
+  // Additional useEffect to handle cases where user is already logged in on mount
+  useEffect(() => {
+    const checkUserProfile = async () => {
+      if (currentUser && !userProfile) {
+        console.log('AuthContext - Checking user profile on mount...');
+        try {
+          const profile = await getDbUserProfile(currentUser.id);
+          console.log('AuthContext - Profile fetched on mount:', profile);
+          if (profile) {
+            setUserProfile(profile);
+            console.log('AuthContext - Profile set in state on mount');
+          } else {
+            console.log('AuthContext - No profile found on mount, creating one...');
+            await createUserProfileWrapper(currentUser);
+          }
+        } catch (error) {
+          console.error('AuthContext - Error getting user profile on mount:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    checkUserProfile();
+  }, [currentUser, userProfile]); // Depend on currentUser and userProfile
 
   const value: AuthContextType = {
     currentUser,

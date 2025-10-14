@@ -77,10 +77,13 @@ const Signup: React.FC = () => {
   const handleGoogleSignup = async () => {
     setLoading(true);
     try {
+      console.log('Initiating Google signup...');
       await loginWithGoogle();
       // Note: Google login redirects, so we don't navigate here
+      console.log('Google signup initiated, redirecting to Google OAuth flow');
     } catch (error: any) {
       console.error('Google signup error:', error);
+      toast.error(error.message || 'Failed to signup with Google. Please try again.');
       setLoading(false);
     }
   };
