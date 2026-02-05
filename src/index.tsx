@@ -3,11 +3,36 @@ import ReactDOM from 'react-dom/client';
 import GlobalErrorBoundary from './GlobalErrorBoundary';
 import './index.css';
 import App from './App';
+import './firebase'; // Initialize Firebase
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+// Suppress "Script error." and GTM/AdBlocker network errors globally
+if (typeof window !== 'undefined') {
+  // Suppress script errors
+  const originalError = window.onerror;
+  window.onerror = function (message, source, lineno, colno, error) {
+    if (message === 'Script error.') return true;
+    if (originalError) return originalError.apply(window, [message, source, lineno, colno, error]);
+    return false;
+  };
+
+  // Suppress unhandled rejections from GTM/Extensions (Failed to fetch)
+  window.addEventListener('unhandledrejection', (event) => {
+    const error = event.reason;
+    if (error && error.message && error.message.includes('Failed to fetch')) {
+      const stack = error.stack || '';
+      // Check if it's from GTM or a Chrome Extension (AdBlocker)
+      if (stack.includes('chrome-extension://') || stack.includes('googletagmanager')) {
+        event.preventDefault(); // Stop the red overlay
+        console.warn('Suppressed GTM/Extension fetch error:', error);
+      }
+    }
+  });
+}
 
 root.render(
   <React.StrictMode>
@@ -17,30 +42,33 @@ root.render(
   </React.StrictMode>
 );
 
-// Disable custom service worker to prevent stale caches causing black screen.
-// Also actively unregister any existing service workers that might be controlling the page.
+// Register Service Worker for PWA capabilities and Caching
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.getRegistrations()
-      .then((registrations) => Promise.all(registrations.map((r) => r.unregister())))
-      .then(() => {
-        // Clear all Cache Storage entries that might hold old files
-        if ('caches' in window) {
-          return caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))));
-        }
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
       })
-      .then(() => {
-        // One-time hard reload to ensure fresh assets after unregister+cache clear
-        if (!sessionStorage.getItem('cache_cleared')) {
-          sessionStorage.setItem('cache_cleared', '1');
-          window.location.reload();
-        }
-      })
-      .catch(() => { /* no-op */ });
+      .catch((error) => {
+        console.log('ServiceWorker registration failed: ', error);
+      });
   });
 }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Performance monitoring with Web Vitals
+reportWebVitals((metric) => {
+  // Log to console in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log(metric);
+  }
+
+  // Send to analytics in production
+  if (process.env.NODE_ENV === 'production' && window.gtag) {
+    window.gtag('event', metric.name, {
+      event_category: 'Web Vitals',
+      value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+      event_label: metric.id,
+      non_interaction: true,
+    });
+  }
+});

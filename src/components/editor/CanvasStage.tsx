@@ -34,10 +34,11 @@ const CanvasStage: React.FC = () => {
           const containerWidth = container.clientWidth;
           const containerHeight = container.clientHeight;
           
-          // Calculate scale to fit at 100% zoom
-          const scaleX = (containerWidth - 60) / width;
-          const scaleY = (containerHeight - 60) / height;
-          const scale = Math.min(scaleX, scaleY, 1); // Allow full scale at 100% zoom
+          // Calculate scale to fit at 100% view, use smaller margin on mobile
+          const margin = window.innerWidth < 768 ? 16 : 60;
+          const scaleX = (containerWidth - margin) / width;
+          const scaleY = (containerHeight - margin) / height;
+          const scale = Math.min(scaleX, scaleY, 1);
           
           canvas.setZoom(scale);
           canvas.renderAll();
@@ -57,7 +58,7 @@ const CanvasStage: React.FC = () => {
   return (
     <div 
       ref={containerRef}
-      className="flex-1 flex items-center justify-center bg-gray-100 overflow-auto p-4 max-w-5xl mx-auto"
+      className="flex-1 h-full w-full flex items-center justify-center bg-gray-100 overflow-auto p-2 sm:p-4 max-w-full"
     >
       <div className="relative" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
         <canvas ref={canvasRef} className="border-2 border-gray-300" />

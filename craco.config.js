@@ -1,7 +1,8 @@
-const CompressionPlugin = require('compression-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+import CompressionPlugin from 'compression-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import webpack from 'webpack';
 
-module.exports = {
+export default {
   webpack: {
     plugins: {
       add: [
@@ -26,6 +27,9 @@ module.exports = {
     },
     configure: (webpackConfig, { env, paths }) => {
       if (env === 'production') {
+        // Disable source maps for smaller build size
+        webpackConfig.devtool = false;
+
         // Add bundle analyzer only when ANALYZE=true
         if (process.env.ANALYZE === 'true') {
           webpackConfig.plugins.push(
@@ -90,10 +94,10 @@ module.exports = {
 
         // Better minimization
         webpackConfig.optimization.minimize = true;
-        
+
         // Preload/prefetch optimizations
         webpackConfig.plugins.push(
-          new (require('webpack').optimize.AggressiveMergingPlugin)(),
+          new webpack.optimize.AggressiveMergingPlugin(),
         );
       }
 

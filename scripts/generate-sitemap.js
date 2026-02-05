@@ -1,226 +1,125 @@
-const { SitemapStream, streamToPromise } = require('sitemap');
-const { createWriteStream } = require('fs');
-const { resolve } = require('path');
+import { readFileSync, writeFileSync, unlinkSync, existsSync } from 'fs';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-async function generateSitemap() {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+async function generateSitemapXml() {
   try {
-    const hostname = 'https://videoforges.web.app';
-    
-    // Create sitemap stream
-    const sitemap = new SitemapStream({ hostname });
-    const writeStream = createWriteStream(resolve(__dirname, '../public/sitemap.xml'));
-    sitemap.pipe(writeStream);
+    const hostname = 'https://editorvault.web.app';
+    const urls = [];
+    const today = new Date().toISOString().split('T')[0];
 
-    // Static pages with priority and frequency
-    const pages = [
-      {
-        url: '/',
-        changefreq: 'daily',
-        priority: 1.0,
-        lastmod: new Date().toISOString()
-      },
-      {
-        url: '/store',
-        changefreq: 'daily', 
-        priority: 0.9,
-        lastmod: new Date().toISOString()
-      },
-      {
-        url: '/about',
-        changefreq: 'monthly',
-        priority: 0.7,
-        lastmod: new Date().toISOString()
-      },
-      {
-        url: '/contact',
-        changefreq: 'monthly',
-        priority: 0.6,
-        lastmod: new Date().toISOString()
-      },
-      {
-        url: '/privacy-policy',
-        changefreq: 'yearly',
-        priority: 0.4,
-        lastmod: new Date().toISOString()
-      },
-      {
-        url: '/terms-of-service',
-        changefreq: 'yearly',
-        priority: 0.4,
-        lastmod: new Date().toISOString()
-      },
-      {
-        url: '/ads',
-        changefreq: 'weekly',
-        priority: 0.5,
-        lastmod: new Date().toISOString()
-      },
-      {
-        url: '/quick-ads',
-        changefreq: 'weekly',
-        priority: 0.5,
-        lastmod: new Date().toISOString()
-      }
+    // Helper to create XML entry
+    const createEntry = (url, priority = '0.80', changefreq = 'weekly') => `
+  <url>
+    <loc>${url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`;
+
+    // Static pages
+    const staticPages = [
+      { path: '/', priority: '1.00', changefreq: 'daily' },
+      { path: '/store', priority: '0.90', changefreq: 'daily' },
+      { path: '/blog', priority: '0.90', changefreq: 'daily' },
+      { path: '/about', priority: '0.60', changefreq: 'monthly' },
+      { path: '/contact', priority: '0.60', changefreq: 'monthly' },
+      { path: '/privacy-policy', priority: '0.30', changefreq: 'yearly' },
+      { path: '/terms-of-service', priority: '0.30', changefreq: 'yearly' },
+      { path: '/faq', priority: '0.50', changefreq: 'monthly' },
+      { path: '/editor', priority: '0.70', changefreq: 'monthly' },
+      { path: '/pen-crop', priority: '0.60', changefreq: 'monthly' }
     ];
+
+    staticPages.forEach(page => {
+      urls.push(createEntry(`${hostname}${page.path}`, page.priority, page.changefreq));
+    });
 
     // Add category pages
     const categories = ['Transitions', 'Backgrounds', 'Music', 'Animations'];
     categories.forEach(category => {
-      pages.push({
-        url: `/store?category=${encodeURIComponent(category)}`,
-        changefreq: 'daily',
-        priority: 0.8,
-        lastmod: new Date().toISOString()
-      });
+      urls.push(createEntry(`${hostname}/store?category=${encodeURIComponent(category)}`, '0.85', 'weekly'));
     });
 
-    // Add pages to sitemap
-    pages.forEach(page => {
-      sitemap.write(page);
-    });
+    // Add Assets dynamically
+    try {
+      const assetsPath = resolve(__dirname, '../src/data/assets.ts');
+      const assetsContent = readFileSync(assetsPath, 'utf8');
+      const assetIdRegex = /id:\s*(\d+),/g;
 
-    // Note: In a real application, you would also add dynamic asset pages here
-    // For example:
-    // mockAssets.forEach(asset => {
-    //   sitemap.write({
-    //     url: `/asset/${asset.id}`,
-    //     changefreq: 'weekly',
-    //     priority: 0.7,
-    //     lastmod: asset.updatedAt || new Date().toISOString()
-    //   });
-    // });
+      let match;
+      console.log('📝 Scanning for assets...');
+      while ((match = assetIdRegex.exec(assetsContent)) !== null) {
+        const assetId = match[1];
+        urls.push(createEntry(`${hostname}/asset/${assetId}`, '0.80', 'monthly'));
+      }
+    } catch (err) {
+      console.warn('⚠️ Could not read assets.ts:', err.message);
+    }
 
-    // Add common search terms as pages
-    const popularSearches = [
-      'video transitions',
-      'video backgrounds', 
-      'royalty free music',
-      'motion graphics',
-      'youtube assets',
-      'premiere pro assets',
-      'after effects templates'
+    // Add Blog Posts dynamically
+    try {
+      const blogSummariesPath = resolve(__dirname, '../src/data/blogSummaries.ts');
+      const blogContent = readFileSync(blogSummariesPath, 'utf8');
+      const idRegex = /id:\s*['"`]([^'"`]+)['"`]/g;
+
+      // Try to match dates too if possible, but for now default to today
+      // In a real scenario, we'd parse the full object, but regex is faster for this script
+
+      let match;
+      console.log('📝 Scanning for blog posts...');
+      while ((match = idRegex.exec(blogContent)) !== null) {
+        const blogId = match[1];
+        urls.push(createEntry(`${hostname}/blog/${blogId}`, '0.80', 'monthly'));
+      }
+      // Manually add blog posts that might have been missed or if regex fails (safety)
+      // but regex should catch the IDs as they are standard string literals
+
+    } catch (err) {
+      console.warn('⚠️ Could not read blogSummaries.ts:', err.message);
+    }
+
+    // Generate XML content
+    const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+${urls.join('')}
+</urlset>`;
+
+    // Write sitemap.xml
+    const sitemapPath = resolve(__dirname, '../public/sitemap.xml');
+    writeFileSync(sitemapPath, sitemapContent, 'utf8');
+    console.log(`✅ sitemap.xml generated successfully with ${urls.length} URLs`);
+
+    // Cleanup old files
+    const oldFiles = [
+      '../public/sitemap.txt',
+      '../public/rewrite.xml',
+      '../public/sitemap-images.xml'
     ];
 
-    popularSearches.forEach(search => {
-      pages.push({
-        url: `/store?search=${encodeURIComponent(search)}`,
-        changefreq: 'weekly',
-        priority: 0.6,
-        lastmod: new Date().toISOString()
-      });
+    oldFiles.forEach(file => {
+      const filePath = resolve(__dirname, file);
+      if (existsSync(filePath)) {
+        unlinkSync(filePath);
+        console.log(`🗑️  Removed old file: ${file}`);
+      }
     });
 
-    // End sitemap
-    sitemap.end();
-
-    // Wait for sitemap generation to complete
-    await streamToPromise(sitemap);
-    
-    console.log('✅ Sitemap generated successfully at public/sitemap.xml');
-    
-    // Generate additional sitemaps for different content types
-    await generateImageSitemap();
-    await generateVideoSitemap();
-    
   } catch (error) {
     console.error('❌ Error generating sitemap:', error);
   }
 }
 
-async function generateImageSitemap() {
-  try {
-    const hostname = 'https://videoforges.web.app';
-    const sitemap = new SitemapStream({ 
-      hostname,
-      xmlns: {
-        image: 'http://www.google.com/schemas/sitemap-image/1.1'
-      }
-    });
-    const writeStream = createWriteStream(resolve(__dirname, '../public/sitemap-images.xml'));
-    sitemap.pipe(writeStream);
-
-    // Add image entries - in a real app, you'd iterate through actual assets
-    const sampleImages = [
-      {
-        url: '/',
-        img: [
-          {
-            url: `${hostname}/og-image.jpg`,
-            title: 'Video Forge - Free Video Editing Assets',
-            caption: 'Professional video editing assets marketplace'
-          }
-        ]
-      },
-      {
-        url: '/store',
-        img: [
-          {
-            url: `${hostname}/store-hero.jpg`,
-            title: 'Free Video Editing Assets Store',
-            caption: 'Browse professional editing resources'
-          }
-        ]
-      }
-    ];
-
-    sampleImages.forEach(page => {
-      sitemap.write(page);
-    });
-
-    sitemap.end();
-    await streamToPromise(sitemap);
-    console.log('✅ Image sitemap generated successfully');
-  } catch (error) {
-    console.error('❌ Error generating image sitemap:', error);
-  }
-}
-
-async function generateVideoSitemap() {
-  try {
-    const hostname = 'https://videoforges.web.app';
-    const sitemap = new SitemapStream({ 
-      hostname,
-      xmlns: {
-        video: 'http://www.google.com/schemas/sitemap-video/1.1'
-      }
-    });
-    const writeStream = createWriteStream(resolve(__dirname, '../public/sitemap-videos.xml'));
-    sitemap.pipe(writeStream);
-
-    // Add video entries - in a real app, you'd iterate through actual video assets
-    const sampleVideos = [
-      {
-        url: '/store',
-        video: [
-          {
-            thumbnail_loc: `${hostname}/video-preview-thumb.jpg`,
-            title: 'Free Video Editing Assets Preview',
-            description: 'Preview of professional video editing assets available on Video Forge',
-            content_loc: `${hostname}/preview-video.mp4`,
-            duration: 30,
-            publication_date: new Date().toISOString(),
-            family_friendly: 'yes',
-            live: 'no'
-          }
-        ]
-      }
-    ];
-
-    sampleVideos.forEach(page => {
-      sitemap.write(page);
-    });
-
-    sitemap.end();
-    await streamToPromise(sitemap);
-    console.log('✅ Video sitemap generated successfully');
-  } catch (error) {
-    console.error('❌ Error generating video sitemap:', error);
-  }
-}
-
 // Run the sitemap generation
-if (require.main === module) {
-  generateSitemap();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  generateSitemapXml();
 }
 
-module.exports = { generateSitemap };
+export { generateSitemapXml };

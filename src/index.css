@@ -7,25 +7,30 @@
   body {
     @apply bg-black text-white font-sans antialiased;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-bold;
   }
-  
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  
+
   ::-webkit-scrollbar-track {
     @apply bg-gray-900;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     @apply bg-gray-600 rounded-full;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-gray-500;
   }
@@ -35,88 +40,90 @@
   .btn-primary {
     @apply bg-white text-black px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-gray-200 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl;
   }
-  
+
   .btn-secondary {
     @apply bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-gray-700 hover:scale-105 active:scale-95 border border-gray-700 shadow-lg hover:shadow-xl;
   }
-  
+
   .card {
     @apply bg-gray-900 rounded-xl p-6 transition-all duration-300 hover:shadow-2xl border border-gray-800 backdrop-blur-sm;
   }
-  
+
   /* Mobile optimizations */
   @media (max-width: 768px) {
-    .btn-primary, .btn-secondary {
+
+    .btn-primary,
+    .btn-secondary {
       @apply px-4 py-2.5 text-sm;
     }
-    
+
     .card {
       @apply p-4;
     }
-    
+
     .mobile-padding {
       @apply px-3 py-2;
     }
-    
+
     .mobile-text {
       @apply text-sm;
     }
-    
+
     .mobile-title {
       @apply text-2xl;
     }
-    
+
     .mobile-hero-title {
       @apply text-4xl;
     }
   }
-  
+
   .glass-effect {
     @apply bg-gray-900 bg-opacity-50 backdrop-blur-lg border border-gray-800;
   }
-  
+
   .gradient-border {
     @apply relative before:absolute before:inset-0 before:p-[1px] before:rounded-xl before:bg-gradient-to-r before:from-gray-700 before:to-gray-500 before:-z-10;
   }
-  
+
   .text-gradient {
     @apply bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent;
   }
-  
+
   .premium-card {
     @apply bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 transition-all duration-300 hover:shadow-2xl border border-gray-700 relative overflow-hidden;
   }
-  
+
   .premium-card::before {
     content: '';
     @apply absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-white;
   }
-  
+
   .diamond-glow {
     filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.4));
   }
-  
+
   .hover-lift {
     @apply transition-transform duration-300 hover:-translate-y-2 hover:shadow-2xl;
   }
-  
+
   .fade-in {
     animation: fadeIn 0.6s ease-out forwards;
   }
-  
+
   .slide-up {
     animation: slideUp 0.6s ease-out forwards;
   }
-  
+
   .bounce-subtle {
     animation: bounceSubtle 2s infinite;
   }
-  
+
   .shine-effect {
     position: relative;
     overflow: hidden;
   }
-  
+
   .shine-effect::before {
     content: '';
     position: absolute;
@@ -127,120 +134,121 @@
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.7s;
   }
-  
+
   .shine-effect:hover::before {
     left: 100%;
   }
-  
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
+
   /* Performance optimizations */
   .gpu-accelerate {
     will-change: transform;
     transform: translateZ(0);
   }
-  
+
   .optimize-animations {
     backface-visibility: hidden;
     perspective: 1000px;
   }
-  
+
   /* Fast loading states */
   .loading-skeleton {
     @apply animate-pulse bg-gray-700 rounded;
   }
-  
+
   /* Custom slow spin animation */
   .animate-spin-slow {
     animation: spin 3s linear infinite;
   }
-  
+
   /* Mobile-specific utilities */
   .mobile-container {
     @apply px-4 py-2;
   }
-  
+
   .mobile-grid {
     @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
   }
-  
+
   .mobile-flex {
     @apply flex-col sm:flex-row;
   }
-  
+
   .mobile-space {
     @apply space-y-4 sm:space-y-0 sm:space-x-4;
   }
-  
+
   .mobile-text-center {
     @apply text-center sm:text-left;
   }
-  
+
   .mobile-full-width {
     @apply w-full sm:w-auto;
   }
-  
+
   /* Touch optimizations */
   .touch-target {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   .touch-friendly {
     @apply p-3 rounded-lg transition-all duration-200;
   }
-  
+
   .touch-friendly:active {
     @apply scale-95 bg-gray-800;
   }
-  
+
   /* Safe area optimizations for mobile devices */
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
   }
-  
+
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
-  
+
   /* Improved mobile modal */
   .mobile-modal {
     @apply fixed inset-0 z-50 flex items-center justify-center p-4;
   }
-  
+
   .mobile-modal-content {
     @apply bg-gray-900 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto;
   }
-  
+
   /* Mobile navigation improvements */
   .mobile-nav {
     @apply fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800 safe-area-bottom;
   }
-  
+
   .mobile-nav-item {
     @apply flex-1 flex flex-col items-center justify-center py-2 px-1 touch-target;
   }
-  
+
   /* Responsive video containers */
   .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    padding-bottom: 56.25%;
+    /* 16:9 aspect ratio */
     height: 0;
     overflow: hidden;
   }
-  
+
   .video-container video,
   .video-container iframe {
     position: absolute;
@@ -249,4 +257,6 @@
     width: 100%;
     height: 100%;
   }
+
+
 }

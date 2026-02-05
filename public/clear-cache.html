@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Clearing Cache...</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            max-width: 500px;
+            padding: 2rem;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h1 { margin: 0 0 1rem; }
+        p { color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1>Clearing old cache...</h1>
+        <p>This will only take a moment. The app will reload automatically.</p>
+    </div>
+    
+    <script>
+        (async function() {
+            console.log('Force clearing all caches...');
+            
+            // Clear service workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                }
+                console.log('Service workers cleared');
+            }
+            
+            // Clear all caches
+            if ('caches' in window) {
+                const names = await caches.keys();
+                for (let name of names) {
+                    await caches.delete(name);
+                }
+                console.log('Caches cleared');
+            }
+            
+            // Clear storage
+            try {
+                localStorage.clear();
+                sessionStorage.clear();
+                console.log('Storage cleared');
+            } catch (e) {
+                console.warn('Could not clear storage:', e);
+            }
+            
+            // Set flag to prevent redirect loop
+            sessionStorage.setItem('cache_cleared', Date.now().toString());
+            
+            // Wait a bit then redirect
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>

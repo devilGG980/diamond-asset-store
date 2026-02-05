@@ -22,12 +22,18 @@ interface EditorState {
   canvas: fabric.Canvas | null;
   activeObject: FabricObjectWithId | null;
   
+  // UI State
+  showLayers: boolean;
+  
   // History (undo/redo)
   history: HistoryState[];
   historyIndex: number;
   
   // Canvas setup
   setCanvas: (canvas: fabric.Canvas) => void;
+  
+  // UI State management
+  setShowLayers: (show: boolean) => void;
   
   // Object management
   setActiveObject: (object: FabricObjectWithId | null) => void;
@@ -56,6 +62,7 @@ interface EditorState {
 export const useEditorStore = create<EditorState>((set, get) => ({
   canvas: null,
   activeObject: null,
+  showLayers: false,
   history: [],
   historyIndex: -1,
 
@@ -94,6 +101,10 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     canvas.on('object:removed', () => {
       get().saveState();
     });
+  },
+
+  setShowLayers: (show: boolean) => {
+    set({ showLayers: show });
   },
 
   setActiveObject: (object: FabricObjectWithId | null) => {

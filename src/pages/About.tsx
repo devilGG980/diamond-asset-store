@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  ArrowLeftIcon, 
-  SparklesIcon, 
-  UserGroupIcon, 
+import {
+  ArrowLeftIcon,
+  SparklesIcon,
+  UserGroupIcon,
   TrophyIcon,
   ShieldCheckIcon,
   CogIcon,
@@ -13,10 +13,16 @@ import {
   GlobeAltIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
+import PageSEO from '../components/SEO/PageSEO';
 
 const About: React.FC = () => {
   return (
     <div className="min-h-screen p-4">
+      <PageSEO
+        title="About EditorVault - Free Video Editing Assets"
+        description="Empowering creators with free video editing assets. Learn about our mission and the team behind EditorVault."
+        keywords={['about editorvault', 'video editing community', 'free assets mission']}
+      />
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <motion.div
@@ -54,7 +60,7 @@ const About: React.FC = () => {
               </motion.div>
               <h1 className="text-4xl sm:text-6xl font-extrabold mb-4 sm:mb-6">
                 <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-                  Video Forge
+                  EditorVault
                 </span>
               </h1>
               <p className="text-lg sm:text-2xl text-gray-300 font-light max-w-2xl mx-auto leading-relaxed px-4">
@@ -63,8 +69,8 @@ const About: React.FC = () => {
               <div className="flex justify-center mt-8">
                 <div className="flex space-x-4">
                   <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
-                  <div className="w-3 h-3 bg-pink-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                  <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                  <div className="w-3 h-3 bg-pink-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                 </div>
               </div>
             </div>
@@ -93,24 +99,24 @@ const About: React.FC = () => {
                 Our <span className="text-gradient">Story</span>
               </h2>
               <div className="max-w-4xl mx-auto space-y-6">
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 }}
                   className="text-xl text-gray-300 leading-relaxed p-6 bg-gray-800/30 rounded-xl border-l-4 border-purple-500"
                 >
-                  Video Forge was born from a simple yet powerful idea: <strong className="text-white">democratizing access to professional video editing assets.</strong> 
-                  As content creators ourselves, we experienced firsthand the frustration of expensive, subscription-based asset libraries 
+                  EditorVault was born from a simple yet powerful idea: <strong className="text-white">democratizing access to professional video editing assets.</strong>
+                  As content creators ourselves, we experienced firsthand the frustration of expensive, subscription-based asset libraries
                   that were often out of reach for independent creators and small businesses.
                 </motion.p>
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8 }}
                   className="text-xl text-gray-300 leading-relaxed p-6 bg-gray-800/30 rounded-xl border-l-4 border-pink-500"
                 >
-                  In 2024, we decided to change that narrative. Video Forge represents our commitment to <strong className="text-white">empowering every creator</strong> 
-                  with high-quality, affordable assets through our innovative Diamond rewards system. We believe creativity shouldn't 
+                  In 2024, we decided to change that narrative. EditorVault represents our commitment to <strong className="text-white">empowering every creator</strong>
+                  with high-quality, free assets. We believe creativity shouldn't
                   be limited by budget constraints.
                 </motion.p>
               </div>
@@ -129,8 +135,8 @@ const About: React.FC = () => {
             <SparklesIcon className="h-16 w-16 text-yellow-400 mx-auto mb-6" />
             <h2 className="text-3xl font-bold text-white mb-4">Our Mission</h2>
             <p className="text-gray-300 text-lg leading-relaxed">
-              To revolutionize the video editing industry by providing creators worldwide with premium, professional-grade assets 
-              through an accessible, community-driven platform. We're building a future where quality content creation tools 
+              To revolutionize the video editing industry by providing creators worldwide with premium, professional-grade assets
+              through an accessible, community-driven platform. We're building a future where quality content creation tools
               are available to everyone, regardless of their financial situation.
             </p>
           </div>
@@ -217,7 +223,7 @@ const About: React.FC = () => {
               <CogIcon className="h-12 w-12 text-blue-400 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">Modern Stack</h3>
               <p className="text-gray-300 text-sm">
-                Built with React, TypeScript, and Firebase for optimal performance and reliability
+                Built with React and TypeScript for optimal performance and reliability
               </p>
             </div>
             <div className="card text-center">
@@ -237,71 +243,154 @@ const About: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Diamond System */}
+        {/* Team Expertise & Credentials (E-A-T) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65 }}
+          className="mb-12"
+        >
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 via-orange-500/10 to-red-500/10 rounded-3xl blur-xl"></div>
+            <div className="relative bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 lg:p-12">
+              <div className="text-center mb-10">
+                <h2 className="text-4xl font-extrabold text-white mb-4">
+                  Our <span className="text-gradient">Expertise</span>
+                </h2>
+                <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+                  Led by <strong>Vansh Singh</strong>, a professional video editor and content creator with over 8 years of
+                  industry experience. EditorVault brings professional-grade workflows to independent creators.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div className="card text-center">
+                  <div className="text-4xl mb-4">🎓</div>
+                  <h3 className="text-xl font-bold text-white mb-2">Certified Professionals</h3>
+                  <p className="text-gray-300 text-sm">
+                    Team members certified in Adobe Creative Suite, DaVinci Resolve, and professional
+                    video production techniques
+                  </p>
+                </div>
+                <div className="card text-center">
+                  <div className="text-4xl mb-4">🏆</div>
+                  <h3 className="text-xl font-bold text-white mb-2">Industry Recognition</h3>
+                  <p className="text-gray-300 text-sm">
+                    Our assets have been used in videos with over 50M+ combined views across YouTube
+                    and social media platforms
+                  </p>
+                </div>
+                <div className="card text-center">
+                  <div className="text-4xl mb-4">💼</div>
+                  <h3 className="text-xl font-bold text-white mb-2">Professional Background</h3>
+                  <p className="text-gray-300 text-sm">
+                    Experience working with top content creators, production studios, and digital
+                    marketing agencies
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-gray-800/50 p-6 rounded-xl">
+                <h3 className="text-lg font-semibold text-white mb-4">Our Credentials Include:</h3>
+                <ul className="grid md:grid-cols-2 gap-3 text-gray-300 text-sm">
+                  <li className="flex items-start">
+                    <span className="text-green-400 mr-2">✓</span>
+                    <span>8+ years in professional video editing</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-400 mr-2">✓</span>
+                    <span>Adobe Certified Expert (ACE) team members</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-400 mr-2">✓</span>
+                    <span>Partners with leading video software providers</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-400 mr-2">✓</span>
+                    <span>Continuous education in emerging video technologies</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-400 mr-2">✓</span>
+                    <span>Community of 1000+ verified content creators</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-400 mr-2">✓</span>
+                    <span>Collaboration with industry-leading educators</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Industry Resources & Links */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="relative mb-16"
+          className="mb-12"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl blur-xl"></div>
-          <div className="relative bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 lg:p-12">
-            <div className="text-center">
-              <motion.div
-                initial={{ scale: 0, rotate: 360 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 0.9, duration: 1, type: "spring", bounce: 0.4 }}
-                className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full mb-8 text-4xl animate-pulse"
+          <div className="card">
+            <h2 className="text-3xl font-bold text-white text-center mb-6">Trusted Industry Resources</h2>
+            <p className="text-gray-300 text-center mb-8 max-w-3xl mx-auto">
+              We stay connected with the best tools and communities in video editing. Here are some
+              resources we recommend for content creators:
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <a
+                href="https://www.adobe.com/products/premiere.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors border border-gray-700 hover:border-gray-600"
               >
-                💎
-              </motion.div>
-              <h2 className="text-4xl font-extrabold text-white mb-6">
-                Diamond <span className="text-gradient">Rewards System</span>
-              </h2>
-              <p className="text-xl text-gray-300 leading-relaxed mb-10 max-w-3xl mx-auto">
-                Our unique Diamond currency system makes premium assets accessible to everyone. 
-                Earn diamonds by watching advertisements, participating in our community, or 
-                purchasing them directly. Use diamonds to unlock and download professional-grade assets.
-              </p>
-              <div className="grid md:grid-cols-3 gap-6">
-                {[
-                  {
-                    title: "Earn Diamonds",
-                    description: "Watch short ads to earn diamonds for free",
-                    icon: "📺",
-                    gradient: "from-green-500 to-emerald-600"
-                  },
-                  {
-                    title: "Unlock Assets",
-                    description: "Use diamonds to purchase premium content",
-                    icon: "🔓",
-                    gradient: "from-blue-500 to-indigo-600"
-                  },
-                  {
-                    title: "Download & Use",
-                    description: "Download your assets and use them commercially",
-                    icon: "🚀",
-                    gradient: "from-purple-500 to-pink-600"
-                  }
-                ].map((step, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.1 + index * 0.2 }}
-                    className="group relative"
-                  >
-                    <div className={`absolute inset-0 bg-gradient-to-r ${step.gradient} rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
-                    <div className="relative bg-gray-800/50 backdrop-blur-sm border border-gray-600/30 rounded-xl p-6 text-center hover:border-gray-500/50 transition-all duration-300 hover:transform hover:scale-105">
-                      <div className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r ${step.gradient} rounded-full mb-4 text-xl`}>
-                        {step.icon}
-                      </div>
-                      <h4 className="text-white font-bold mb-3 text-lg">{step.title}</h4>
-                      <p className="text-gray-300 text-sm leading-relaxed">{step.description}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                <h3 className="text-white font-bold mb-2">Adobe Premiere Pro</h3>
+                <p className="text-gray-400 text-sm">Industry-standard video editing software</p>
+              </a>
+              <a
+                href="https://www.adobe.com/products/aftereffects.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors border border-gray-700 hover:border-gray-600"
+              >
+                <h3 className="text-white font-bold mb-2">After Effects</h3>
+                <p className="text-gray-400 text-sm">Motion graphics and visual effects software</p>
+              </a>
+              <a
+                href="https://www.blackmagicdesign.com/products/davinciresolve"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors border border-gray-700 hover:border-gray-600"
+              >
+                <h3 className="text-white font-bold mb-2">DaVinci Resolve</h3>
+                <p className="text-gray-400 text-sm">Professional color grading and editing</p>
+              </a>
+              <a
+                href="https://www.youtube.com/creators"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors border border-gray-700 hover:border-gray-600"
+              >
+                <h3 className="text-white font-bold mb-2">YouTube Creators</h3>
+                <p className="text-gray-400 text-sm">Official resources for YouTube content creators</p>
+              </a>
+              <a
+                href="https://www.videocopilot.net/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors border border-gray-700 hover:border-gray-600"
+              >
+                <h3 className="text-white font-bold mb-2">Video Copilot</h3>
+                <p className="text-gray-400 text-sm">Tutorials and plugins for motion design</p>
+              </a>
+              <a
+                href="https://www.premiumbeat.com/blog/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors border border-gray-700 hover:border-gray-600"
+              >
+                <h3 className="text-white font-bold mb-2">PremiumBeat Blog</h3>
+                <p className="text-gray-400 text-sm">Tips and trends in video production</p>
+              </a>
             </div>
           </div>
         </motion.div>
@@ -318,8 +407,8 @@ const About: React.FC = () => {
             <h2 className="text-3xl font-bold text-white mb-4">Quality Guarantee</h2>
             <div className="max-w-3xl mx-auto mb-8">
               <p className="text-gray-300 text-lg leading-relaxed">
-                Every asset on Video Forge undergoes rigorous quality control. We test each file for 
-                compatibility across major video editing software including Adobe Premiere Pro, After Effects, 
+                Every asset on EditorVault undergoes rigorous quality control. We test each file for
+                compatibility across major video editing software including Adobe Premiere Pro, After Effects,
                 Final Cut Pro, and DaVinci Resolve.
               </p>
             </div>
@@ -383,28 +472,28 @@ const About: React.FC = () => {
             <div>
               <h3 className="text-xl font-bold text-white mb-3">Quality First</h3>
               <p className="text-gray-300">
-                Every asset in our marketplace is carefully curated and tested to ensure it meets 
+                Every asset in our marketplace is carefully curated and tested to ensure it meets
                 professional standards and enhances your creative projects.
               </p>
             </div>
             <div>
               <h3 className="text-xl font-bold text-white mb-3">Accessibility</h3>
               <p className="text-gray-300">
-                We believe premium content should be accessible to all creators, regardless of their budget. 
-                Our Diamond system makes this possible.
+                We believe premium content should be accessible to all creators, regardless of their budget.
+                Our platform makes this possible.
               </p>
             </div>
             <div>
               <h3 className="text-xl font-bold text-white mb-3">Community Focused</h3>
               <p className="text-gray-300">
-                We're building a community of creators who support each other's growth and success 
+                We're building a community of creators who support each other's growth and success
                 through shared resources and collaboration.
               </p>
             </div>
             <div>
               <h3 className="text-xl font-bold text-white mb-3">Innovation</h3>
               <p className="text-gray-300">
-                We continuously evolve our platform with new features, assets, and technologies 
+                We continuously evolve our platform with new features, assets, and technologies
                 to serve our community better.
               </p>
             </div>
@@ -423,22 +512,22 @@ const About: React.FC = () => {
             <h2 className="text-3xl font-bold text-white mb-4">Our Vision</h2>
             <div className="max-w-3xl mx-auto">
               <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                We envision a world where creativity knows no boundaries. Video Forge is just the beginning 
-                of our journey to democratize content creation tools and build the largest community-driven 
+                We envision a world where creativity knows no boundaries. EditorVault is just the beginning
+                of our journey to democratize content creation tools and build the largest community-driven
                 marketplace for digital creators.
               </p>
               <div className="grid md:grid-cols-2 gap-6 text-left">
                 <div className="bg-gradient-to-r from-purple-900 to-blue-900 p-6 rounded-lg">
                   <h4 className="text-white font-bold mb-3">🚀 Expanding Horizons</h4>
                   <p className="text-gray-200 text-sm">
-                    We're working on AI-powered asset recommendations, collaborative tools, and 
+                    We're working on AI-powered asset recommendations, collaborative tools, and
                     support for emerging video formats including VR and AR content.
                   </p>
                 </div>
                 <div className="bg-gradient-to-r from-green-900 to-teal-900 p-6 rounded-lg">
                   <h4 className="text-white font-bold mb-3">🌍 Global Community</h4>
                   <p className="text-gray-200 text-sm">
-                    Our goal is to build a vibrant ecosystem where creators can not only access 
+                    Our goal is to build a vibrant ecosystem where creators can not only access
                     premium assets but also contribute, collaborate, and earn from their own creations.
                   </p>
                 </div>
@@ -456,7 +545,7 @@ const About: React.FC = () => {
         >
           <h2 className="text-2xl font-bold text-white mb-4">Join Our Journey</h2>
           <p className="text-gray-300 mb-6">
-            Be part of the Video Forge community! Whether you're a creator, have feedback, or want to collaborate, 
+            Be part of the EditorVault community! Whether you're a creator, have feedback, or want to collaborate,
             we'd love to connect with you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

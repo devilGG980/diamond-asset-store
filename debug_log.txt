@@ -1,0 +1,59 @@
+
+🔍 Checking https://thumbnailmake.web.app/sitemap.xml...
+   Status: 200
+   Headers: {
+  "connection": "keep-alive",
+  "content-length": "11434",
+  "cache-control": "public, max-age=3600, must-revalidate",
+  "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://firebasestorage.googleapis.com https://firebase.googleapis.com; object-src 'none';",
+  "content-type": "application/xml; charset=utf-8",
+  "etag": "\"a231833a09694faf171988ee8ddad06befbc107c41f7e2c3e0237d195af0158d\"",
+  "last-modified": "Mon, 15 Dec 2025 10:41:31 GMT",
+  "permissions-policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "strict-transport-security": "max-age=31556926; includeSubDomains; preload",
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "DENY",
+  "x-robots-tag": "all",
+  "x-xss-protection": "1; mode=block",
+  "accept-ranges": "bytes",
+  "date": "Mon, 15 Dec 2025 10:42:15 GMT",
+  "x-served-by": "cache-bom-vanm7210074-BOM",
+  "x-cache": "MISS",
+  "x-cache-hits": "0",
+  "x-timer": "S1765795335.499307,VS0,VE380",
+  "vary": "x-fh-requested-host, accept-encoding",
+  "alt-svc": "h3=\":443\";ma=86400,h3-29=\":443\";ma=86400,h3-27=\":443\";ma=86400"
+}
+   Content Length: 11434
+   ❌ X-Robots-Tag found: all
+   ✅ XML is valid.
+   URL Count: 61
+
+🔍 Checking https://thumbnailmake.web.app/robots.txt...
+   Status: 200
+   Headers: {
+  "connection": "keep-alive",
+  "content-length": "584",
+  "cache-control": "public, max-age=3600, must-revalidate",
+  "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://firebasestorage.googleapis.com https://firebase.googleapis.com; object-src 'none';",
+  "content-type": "text/plain; charset=utf-8",
+  "etag": "\"6f2acfb6c9a0d249360c8d972698a36e0451d7447332b0a1c08e3e09894bb8ce\"",
+  "last-modified": "Mon, 15 Dec 2025 10:41:31 GMT",
+  "permissions-policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "strict-transport-security": "max-age=31556926; includeSubDomains; preload",
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "DENY",
+  "x-xss-protection": "1; mode=block",
+  "accept-ranges": "bytes",
+  "date": "Mon, 15 Dec 2025 10:42:16 GMT",
+  "x-served-by": "cache-bom-vanm7210074-BOM",
+  "x-cache": "MISS",
+  "x-cache-hits": "0",
+  "x-timer": "S1765795336.958719,VS0,VE169",
+  "vary": "x-fh-requested-host, accept-encoding",
+  "alt-svc": "h3=\":443\";ma=86400,h3-29=\":443\";ma=86400,h3-27=\":443\";ma=86400"
+}
+   Content Length: 584
+   ✅ X-Robots-Tag NOT found.

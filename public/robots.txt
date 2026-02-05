@@ -1,129 +1,40 @@
-# robots.txt for videoforges.web.app
-# Optimized for Video Forge - Free Video Editing Assets
+# EditorVault Robots.txt
+# https://editorvault.web.app/robots.txt
 
 User-agent: *
 Allow: /
 
-# Allow all major search engines to crawl important content
-Allow: /store
-Allow: /store?category=*
-Allow: /store?search=*
-Allow: /asset/
-Allow: /about
-Allow: /contact
-Allow: /privacy-policy
-Allow: /terms-of-service
+# Sitemaps
+Sitemap: https://editorvault.web.app/sitemap.xml
 
-# Disallow admin and internal pages
-Disallow: /admin
-Disallow: /dashboard
-Disallow: /login-test
-Disallow: /debug
-Disallow: /database-test
-Disallow: /firestore-debug
+# Disallow admin or sensitive paths (if any)
+# Disallow: /admin/
+# Disallow: /api/
 
-# Disallow ad-related pages (not useful for SEO)
-Disallow: /ads
-Disallow: /quick-ads
-
-# Allow assets and media
-Allow: /thumbnails/
-Allow: /assets/
-Allow: /static/
-Allow: /*.jpg
-Allow: /*.jpeg
-Allow: /*.png
-Allow: /*.webp
-Allow: /*.mp4
-Allow: /*.mp3
-Allow: /*.svg
-
-# Google-specific crawlers
+# Allow all major search engine bots
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 1
 
 User-agent: Googlebot-Image
-Allow: /thumbnails/
-Allow: /assets/
-Allow: /*.jpg
-Allow: /*.jpeg
-Allow: /*.png
-Allow: /*.webp
+Allow: /
 
-User-agent: Googlebot-Video
-Allow: /assets/
-Allow: /*.mp4
-Allow: /previews/
-
-# Bing crawler
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 2
 
-# Social media crawlers for better sharing
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
 User-agent: facebookexternalhit
 Allow: /
 
 User-agent: Twitterbot
 Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-# SEO tools
-User-agent: AhrefsBot
-Crawl-delay: 30
-
-User-agent: SemrushBot
-Crawl-delay: 10
-
-# Block aggressive crawlers that don't respect crawl-delay
-User-agent: MJ12bot
-Disallow: /
-
-User-agent: DotBot
-Disallow: /
-
-# Sitemaps
-Sitemap: https://videoforges.web.app/sitemap.xml
-Sitemap: https://videoforges.web.app/sitemap-images.xml
-Sitemap: https://videoforges.web.app/sitemap-videos.xml
-
-# Host directive (helps with canonicalization)
-Host: videoforges.web.app
-Allow: /store
-Allow: /asset/*
-Allow: /login
-Allow: /signup
-Allow: /ads
-Allow: /privacy-policy
-Allow: /terms-of-service
-Allow: /about
-Allow: /contact
-
-# Important SEO files
-Allow: /sitemap.xml
-Allow: /sitemap-*.xml
-
-# Static assets
-Allow: /static/
-Allow: /videos/
-Allow: /thumbnail/
-Allow: /thumbnails/
-
-# Disallow admin and sensitive areas
-Disallow: /admin
-Disallow: /api/
-Disallow: /*?*utm_source=
-Disallow: /*?*utm_medium=
-Disallow: /*?*utm_campaign=
-
-# AdSense friendly - allow ad verification
-Allow: /ads.txt
-
-# Crawl-delay for respectful crawling
-Crawl-delay: 1
-
-# Sitemap location
-Sitemap: https://videoforges.web.app/sitemap.xml

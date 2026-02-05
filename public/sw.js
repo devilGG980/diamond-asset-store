@@ -1,146 +1,50 @@
-const CACHE_NAME = 'video-forge-v1';
-const urlsToCache = [
-  '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
-  '/manifest.json'
-];
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js');
 
-// Cache images and videos more aggressively
-const MEDIA_CACHE_NAME = 'video-forge-media-v1';
-const MEDIA_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.mp4', '.webm', '.ogg'];
+if (workbox) {
+  console.log('Yay! Workbox is loaded 🎉');
 
-// Install event - cache core assets
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache);
-      })
-      .then(() => {
-        // Activate immediately
-        return self.skipWaiting();
-      })
+  // Precaching allows you to cache a set of files during the installing step
+  // asking Workbox to simply install immediately
+  workbox.core.skipWaiting();
+  workbox.core.clientsClaim();
+
+  // Cache Google Fonts
+  workbox.routing.registerRoute(
+    ({ url }) => url.origin === 'https://fonts.googleapis.com' ||
+      url.origin === 'https://fonts.gstatic.com',
+    new workbox.strategies.StaleWhileRevalidate({
+      cacheName: 'google-fonts',
+    }),
   );
-});
 
-// Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME && cacheName !== MEDIA_CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      // Claim all clients immediately
-      return self.clients.claim();
-    })
+  // Cache Images (Cache First - they don't change often)
+  workbox.routing.registerRoute(
+    ({ request }) => request.destination === 'image',
+    new workbox.strategies.CacheFirst({
+      cacheName: 'images',
+      plugins: [
+        new workbox.expiration.ExpirationPlugin({
+          maxEntries: 60,
+          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+        }),
+      ],
+    }),
   );
-});
 
-// Fetch event - serve from cache when possible
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
+  // Cache JS and CSS (Stale While Revalidate)
+  workbox.routing.registerRoute(
+    ({ request }) => request.destination === 'script' ||
+      request.destination === 'style',
+    new workbox.strategies.StaleWhileRevalidate({
+      cacheName: 'static-resources',
+    }),
+  );
 
-  // Skip non-GET requests
-  if (request.method !== 'GET') {
-    return;
-  }
-
-  // Skip Firebase and external API calls
-  if (url.hostname.includes('firebase') || 
-      url.hostname.includes('googleapis') || 
-      url.hostname.includes('gstatic')) {
-    return;
-  }
-
-  // Determine if it's a media file
-  const isMediaFile = MEDIA_EXTENSIONS.some(ext => url.pathname.endsWith(ext));
-  
-  if (isMediaFile) {
-    // Media files - cache first strategy with longer expiration
-    event.respondWith(
-      caches.open(MEDIA_CACHE_NAME)
-        .then((cache) => {
-          return cache.match(request)
-            .then((response) => {
-              if (response) {
-                return response;
-              }
-              
-              return fetch(request).then((fetchResponse) => {
-                // Only cache successful responses
-                if (fetchResponse.status === 200) {
-                  cache.put(request, fetchResponse.clone());
-                }
-                return fetchResponse;
-              });
-            });
-        })
-    );
-  } else {
-    // Other files - network first, fallback to cache
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Only cache successful responses
-          if (response.status === 200) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(request, responseClone);
-              });
-          }
-          return response;
-        })
-        .catch(() => {
-          // Network failed, try cache
-          return caches.match(request);
-        })
-    );
-  }
-});
-
-// Background sync for offline functionality
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'background-sync') {
-    event.waitUntil(doBackgroundSync());
-  }
-});
-
-function doBackgroundSync() {
-  // Implement background sync logic here if needed
-  return Promise.resolve();
+} else {
+  console.log('Boo! Workbox didn\'t load 😬');
 }
 
-// Push notifications (for future use)
-self.addEventListener('push', (event) => {
-  if (event.data) {
-    const data = event.data.json();
-    const options = {
-      body: data.body,
-      icon: '/icon-192x192.png',
-      badge: '/icon-192x192.png',
-      vibrate: [100, 50, 100],
-      data: data.data
-    };
-    
-    event.waitUntil(
-      self.registration.showNotification(data.title, options)
-    );
-  }
-});
-
-// Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  
-  event.waitUntil(
-    clients.openWindow(event.notification.data.url || '/')
-  );
+// Fallback for offline usage
+self.addEventListener('fetch', (event) => {
+  // Logic inherited from Workbox routes
 });

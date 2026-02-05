@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEditorStore } from './useEditorStore';
-import { useAuth } from '../../contexts/AuthContext';
 import { saveAs } from 'file-saver';
 import toast from 'react-hot-toast';
 import {
   XMarkIcon,
   ArrowDownTrayIcon,
   SparklesIcon,
-  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
-import { Link } from 'react-router-dom';
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -19,11 +16,9 @@ interface DownloadModalProps {
 
 const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
   const { canvas } = useEditorStore();
-  const { currentUser, userProfile, updateUserDiamonds } = useAuth();
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string>('');
-
-  const DOWNLOAD_COST = 10;
 
   React.useEffect(() => {
     if (isOpen && canvas) {
@@ -38,31 +33,15 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
   }, [isOpen, canvas]);
 
   const handleDownload = async () => {
-    if (!currentUser || !canvas) {
-      toast.error('Please log in to download');
-      return;
-    }
-
-    if (!userProfile) {
-      toast.error('User profile not loaded');
+    if (!canvas) {
+      toast.error('No canvas to download');
       return;
     }
 
     setIsProcessing(true);
 
     try {
-      const currentDiamonds = userProfile.diamondBalance;
-
-      if (currentDiamonds < DOWNLOAD_COST) {
-        toast.error(
-          `Not enough diamonds! You have ${currentDiamonds}💎, need ${DOWNLOAD_COST}💎`,
-          { duration: 4000 }
-        );
-        setIsProcessing(false);
-        return;
-      }
-
-      // Download first
+      // Download
       const dataUrl = canvas.toDataURL({
         format: 'png',
         quality: 1,
@@ -80,13 +59,9 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
       // Download using FileSaver.js
       saveAs(blob, filename);
 
-      // Update diamonds using AuthContext
-      await updateUserDiamonds(-DOWNLOAD_COST);
-
-      const newBalance = currentDiamonds - DOWNLOAD_COST;
       toast.success(
-        `✅ Thumbnail downloaded! ${DOWNLOAD_COST}💎 deducted. New balance: ${newBalance}💎`,
-        { duration: 5000 }
+        `✅ Thumbnail downloaded successfully!`,
+        { duration: 3000 }
       );
 
       onClose();
@@ -99,8 +74,6 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
   };
 
   if (!isOpen) return null;
-
-  const hasEnoughDiamonds = (userProfile?.diamondBalance || 0) >= DOWNLOAD_COST;
 
   return (
     <AnimatePresence>
@@ -129,7 +102,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-white">Download Thumbnail</h2>
-                <p className="text-gray-400 text-sm">High-quality PNG (1280x720)</p>
+                <p className="text-gray-400 text-sm">High-quality PNG (1280x720) - FREE</p>
               </div>
             </div>
             <button
@@ -154,27 +127,6 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
               </div>
             )}
 
-            {/* Diamond Cost */}
-            <div className={`rounded-lg p-4 ${hasEnoughDiamonds ? 'bg-green-900 bg-opacity-20 border border-green-700' : 'bg-red-900 bg-opacity-20 border border-red-700'}`}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  {hasEnoughDiamonds ? (
-                    <SparklesIcon className="h-6 w-6 text-green-400" />
-                  ) : (
-                    <ExclamationTriangleIcon className="h-6 w-6 text-red-400" />
-                  )}
-                  <div>
-                    <p className="text-white font-semibold">
-                      {hasEnoughDiamonds ? 'Ready to Download' : 'Not Enough Diamonds'}
-                    </p>
-                    <p className="text-gray-400 text-sm">
-                      Cost: {DOWNLOAD_COST}💎 • Your Balance: {userProfile?.diamondBalance || 0}💎
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Info */}
             <div className="bg-gray-800 rounded-lg p-4">
               <h3 className="text-white font-semibold mb-2 flex items-center">
@@ -185,43 +137,34 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
                 <li>✅ High-quality PNG image (1280x720)</li>
                 <li>✅ Perfect for YouTube thumbnails</li>
                 <li>✅ Transparent background support</li>
-                <li>✅ Instant download</li>
+                <li>✅ Instant download - 100% FREE!</li>
               </ul>
             </div>
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-3">
-              {hasEnoughDiamonds ? (
-                <button
-                  onClick={handleDownload}
-                  disabled={isProcessing}
-                  className="flex-1 btn-primary flex items-center justify-center space-x-2 py-3"
-                >
-                  {isProcessing ? (
-                    <>
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                      >
-                        ⚙️
-                      </motion.div>
-                      <span>Processing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <ArrowDownTrayIcon className="h-5 w-5" />
-                      <span>Download for {DOWNLOAD_COST}💎</span>
-                    </>
-                  )}
-                </button>
-              ) : (
-                <Link
-                  to="/ads"
-                  className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black font-bold py-3 px-6 rounded-lg transition-all duration-200 text-center"
-                >
-                  Earn More Diamonds
-                </Link>
-              )}
+              <button
+                onClick={handleDownload}
+                disabled={isProcessing}
+                className="flex-1 btn-primary flex items-center justify-center space-x-2 py-3"
+              >
+                {isProcessing ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    >
+                      ⚙️
+                    </motion.div>
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <ArrowDownTrayIcon className="h-5 w-5" />
+                    <span>Download FREE</span>
+                  </>
+                )}
+              </button>
               <button
                 onClick={onClose}
                 className="btn-secondary py-3 px-6"

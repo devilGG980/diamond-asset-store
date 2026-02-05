@@ -1,4 +1,4 @@
-# ads.txt file for Video Forge - Free Video Editing Assets
+# ads.txt file for Editor Vault - Free Video Editing Assets
 # This file helps ensure proper ad monetization and prevents unauthorized ad serving
 
 # No active ad networks currently configured

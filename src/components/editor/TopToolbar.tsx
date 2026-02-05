@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEditorStore } from './useEditorStore';
-import { useAuth } from '../../contexts/AuthContext';
+
 import AlignmentTools from './AlignmentTools';
 import {
   ArrowUturnLeftIcon,
@@ -28,7 +28,7 @@ const TopToolbar: React.FC<TopToolbarProps> = ({ onDownload }) => {
     deleteActiveObject,
   } = useEditorStore();
   
-  const { userProfile } = useAuth();
+  
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const handleClear = () => {
@@ -71,18 +71,18 @@ const TopToolbar: React.FC<TopToolbarProps> = ({ onDownload }) => {
   };
 
   return (
-    <div className="bg-gray-900 border-b border-gray-800 px-4 py-3">
-      <div className="flex items-center justify-between">
+    <div className="bg-gray-900 border-b border-gray-800 px-2 sm:px-3 md:px-4 py-2 sm:py-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         {/* Left Section - Editor Title */}
-        <div className="flex items-center space-x-4">
-          <h2 className="text-xl font-bold text-gradient">Thumbnail Editor</h2>
-          <div className="text-gray-400 text-sm">
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          <h2 className="text-lg sm:text-xl font-bold text-gradient">Thumbnail Editor</h2>
+          <div className="text-gray-400 text-xs sm:text-sm hidden md:block">
             YouTube Size: 1280x720
           </div>
         </div>
 
         {/* Middle Section - Tools */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Undo/Redo */}
           <div className="flex items-center space-x-1 bg-gray-800 rounded-lg p-1">
             <button
@@ -115,21 +115,21 @@ const TopToolbar: React.FC<TopToolbarProps> = ({ onDownload }) => {
           <div className="flex items-center space-x-1 bg-gray-800 rounded-lg p-1">
             <button
               onClick={handleZoomOut}
-              className="p-2 text-white hover:bg-gray-700 rounded transition-colors"
+              className="p-1.5 sm:p-2 text-white hover:bg-gray-700 rounded transition-colors"
               title="Zoom Out"
             >
               <span className="text-sm font-bold">−</span>
             </button>
             <button
               onClick={handleZoomReset}
-              className="px-3 py-1 text-white hover:bg-gray-700 rounded transition-colors text-sm"
+              className="px-2 sm:px-3 py-1 text-white hover:bg-gray-700 rounded transition-colors text-xs sm:text-sm"
               title="Reset Zoom"
             >
               100%
             </button>
             <button
               onClick={handleZoomIn}
-              className="p-2 text-white hover:bg-gray-700 rounded transition-colors"
+              className="p-1.5 sm:p-2 text-white hover:bg-gray-700 rounded transition-colors"
               title="Zoom In"
             >
               <span className="text-sm font-bold">+</span>
@@ -197,7 +197,7 @@ const TopToolbar: React.FC<TopToolbarProps> = ({ onDownload }) => {
               💎
             </motion.div>
             <span className="font-bold text-black">
-              {userProfile?.diamondBalance?.toLocaleString() || '0'}
+              {'0'}
             </span>
           </div>
 
@@ -207,7 +207,7 @@ const TopToolbar: React.FC<TopToolbarProps> = ({ onDownload }) => {
             className="btn-primary flex items-center space-x-2"
           >
             <ArrowDownTrayIcon className="h-5 w-5" />
-            <span>Download (10💎)</span>
+            <span className="hidden sm:inline">Download (10💎)</span>
           </button>
         </div>
       </div>

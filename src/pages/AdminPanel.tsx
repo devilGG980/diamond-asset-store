@@ -9,6 +9,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import PageSEO from '../components/SEO/PageSEO';
 
 const AdminPanel: React.FC = () => {
   const [assets, setAssets] = useState<Asset[]>(mockAssets);
@@ -88,21 +89,21 @@ const AdminPanel: React.FC = () => {
         };
         const updatedAssets = [...assets, newAsset];
         setAssets(updatedAssets);
-        
+
         // Save to localStorage for persistence
-        localStorage.setItem('videoForgeAssets', JSON.stringify(updatedAssets));
+        localStorage.setItem('editorVaultAssets', JSON.stringify(updatedAssets));
         toast.success('New asset added successfully!');
       } else if (editingAsset) {
         // Update existing asset
-        const updatedAssets = assets.map(asset => 
-          asset.id === editingAsset.id 
+        const updatedAssets = assets.map(asset =>
+          asset.id === editingAsset.id
             ? { ...asset, ...formData, id: asset.id, createdAt: asset.createdAt, downloads: asset.downloads }
             : asset
         );
         setAssets(updatedAssets);
-        
+
         // Save to localStorage for persistence
-        localStorage.setItem('videoForgeAssets', JSON.stringify(updatedAssets));
+        localStorage.setItem('editorVaultAssets', JSON.stringify(updatedAssets));
         toast.success('Asset updated successfully!');
       }
     } catch (error) {
@@ -131,21 +132,40 @@ const AdminPanel: React.FC = () => {
     setFormData({ ...formData, tags });
   };
 
+  const handleExport = () => {
+    const jsonString = JSON.stringify(assets, null, 2);
+    navigator.clipboard.writeText(jsonString);
+    toast.success('Assets JSON copied to clipboard!');
+  };
+
   return (
     <div className="min-h-screen p-4">
+      <PageSEO
+        title="Admin Panel - EditorVault"
+        description="Local Admin Panel for managing assets."
+        noIndex={true}
+      />
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gradient mb-2">Admin Panel</h1>
-            <p className="text-gray-400">Manage Video Forge Assets</p>
+            <h1 className="text-4xl font-bold text-gradient mb-2">Local Admin Panel</h1>
+            <p className="text-gray-400">Manage Assets (Local Storage Only)</p>
           </div>
-          <button
-            onClick={handleAddNew}
-            className="btn-primary flex items-center space-x-2"
-          >
-            <PlusIcon className="h-5 w-5" />
-            <span>Add New Asset</span>
-          </button>
+          <div className="flex space-x-4">
+            <button
+              onClick={handleExport}
+              className="btn-secondary flex items-center space-x-2"
+            >
+              <span>📋 Copy JSON</span>
+            </button>
+            <button
+              onClick={handleAddNew}
+              className="btn-primary flex items-center space-x-2"
+            >
+              <PlusIcon className="h-5 w-5" />
+              <span>Add New Asset</span>
+            </button>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -162,8 +182,8 @@ const AdminPanel: React.FC = () => {
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
                         {asset.thumbnail && (asset.thumbnail.startsWith('data:') || asset.thumbnail.startsWith('/')) ? (
-                          <img 
-                            src={asset.thumbnail} 
+                          <img
+                            src={asset.thumbnail.startsWith('data:') ? asset.thumbnail : encodeURI(asset.thumbnail)}
                             alt={asset.title}
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -177,7 +197,7 @@ const AdminPanel: React.FC = () => {
                       </div>
                       <div>
                         <h3 className="text-white font-medium">{asset.title}</h3>
-                        <p className="text-gray-400 text-sm">{asset.category} • 💎{asset.price}</p>
+                        <p className="text-gray-400 text-sm">{asset.category}</p>
                       </div>
                       {asset.featured && (
                         <span className="bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold">
@@ -245,17 +265,7 @@ const AdminPanel: React.FC = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">Price (💎)</label>
-                      <input
-                        type="number"
-                        value={formData.price || 0}
-                        onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) })}
-                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                      />
-                    </div>
-
+                  <div className="grid grid-cols-1 gap-4">
                     <div>
                       <label className="block text-gray-300 text-sm font-medium mb-2">Frame Rate</label>
                       <select
@@ -344,7 +354,7 @@ const AdminPanel: React.FC = () => {
         </div>
 
         {/* Quick Stats */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="card text-center">
             <div className="text-3xl font-bold text-yellow-400">{assets.length}</div>
             <div className="text-gray-400">Total Assets</div>
@@ -356,10 +366,6 @@ const AdminPanel: React.FC = () => {
           <div className="card text-center">
             <div className="text-3xl font-bold text-blue-400">{assets.filter(a => a.category === 'Transitions').length}</div>
             <div className="text-gray-400">Transitions</div>
-          </div>
-          <div className="card text-center">
-            <div className="text-3xl font-bold text-purple-400">💎{assets.reduce((sum, a) => sum + a.price, 0)}</div>
-            <div className="text-gray-400">Total Value</div>
           </div>
         </div>
       </div>

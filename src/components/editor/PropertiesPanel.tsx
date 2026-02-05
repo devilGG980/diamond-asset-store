@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useEditorStore } from './useEditorStore';
+import ColorPicker from './ColorPicker';
+import LayersPanel from './LayersPanel';
 import {
   ArrowUpIcon,
   ArrowDownIcon,
   ArrowUpCircleIcon,
   ArrowDownCircleIcon,
   SparklesIcon,
+  RectangleStackIcon,
 } from '@heroicons/react/24/outline';
 import * as fabric from 'fabric';
 import toast from 'react-hot-toast';
 
 const PropertiesPanel: React.FC = () => {
-  const { activeObject, updateActiveObject, bringForward, sendBackward, bringToFront, sendToBack, canvas } = useEditorStore();
+  const { activeObject, updateActiveObject, bringForward, sendBackward, bringToFront, sendToBack, canvas, showLayers, setShowLayers } = useEditorStore();
   
   const [properties, setProperties] = useState({
     fill: '#000000',
@@ -26,11 +29,6 @@ const PropertiesPanel: React.FC = () => {
     shadow: '',
     charSpacing: 0,
     lineHeight: 1.16,
-    // Image properties
-    brightness: 0,
-    contrast: 0,
-    saturation: 0,
-    blur: 0,
   });
 
   useEffect(() => {
@@ -54,10 +52,6 @@ const PropertiesPanel: React.FC = () => {
         charSpacing: activeObject.charSpacing || 0,
         // @ts-ignore
         lineHeight: activeObject.lineHeight || 1.16,
-        brightness: 0,
-        contrast: 0,
-        saturation: 0,
-        blur: 0,
       });
     }
   }, [activeObject]);
@@ -66,6 +60,7 @@ const PropertiesPanel: React.FC = () => {
     setProperties(prev => ({ ...prev, [key]: value }));
     updateActiveObject({ [key]: value });
   };
+
 
   const handleShadowChange = (shadowColor: string) => {
     setProperties(prev => ({ ...prev, shadow: shadowColor }));
@@ -82,65 +77,6 @@ const PropertiesPanel: React.FC = () => {
     }
   };
 
-  const applyImageFilter = (filterType: string, value: number) => {
-    if (!activeObject || activeObject.type !== 'image') return;
-    
-    setProperties(prev => ({ ...prev, [filterType]: value }));
-    
-    // Apply visual effects using Fabric v6 compatible methods
-    // Use opacity and transform-based approaches since filters API changed in v6
-    switch (filterType) {
-      case 'brightness':
-        // Simulate brightness using opacity overlay
-        // Positive values: lighter (increase opacity of white overlay)
-        // Negative values: darker (decrease overall opacity)
-        if (value >= 0) {
-          activeObject.set({ opacity: 1 + value * 0.5 });
-        } else {
-          activeObject.set({ opacity: 1 + value });
-        }
-        break;
-      
-      case 'contrast':
-        // Simulate contrast using shadow intensity
-        if (value !== 0) {
-          const shadow = new fabric.Shadow({
-            color: value > 0 ? '#000000' : '#ffffff',
-            blur: Math.abs(value) * 10,
-            offsetX: 0,
-            offsetY: 0,
-          });
-          activeObject.set({ shadow });
-        } else {
-          activeObject.set({ shadow: null });
-        }
-        break;
-      
-      case 'saturation':
-        // Note: True saturation requires filter API which changed in v6
-        // This is a visual approximation using opacity
-        activeObject.set({ opacity: Math.max(0.3, 1 - Math.abs(value) * 0.3) });
-        break;
-      
-      case 'blur':
-        // Simulate blur using shadow
-        if (value > 0) {
-          const blurShadow = new fabric.Shadow({
-            color: 'rgba(0,0,0,0.3)',
-            blur: value / 2,
-            offsetX: 0,
-            offsetY: 0,
-          });
-          activeObject.set({ shadow: blurShadow });
-        } else {
-          activeObject.set({ shadow: null });
-        }
-        break;
-    }
-    
-    canvas?.renderAll();
-    toast.success(`${filterType.charAt(0).toUpperCase() + filterType.slice(1)} adjusted`);
-  };
 
   const removeBackground = () => {
     if (!activeObject || activeObject.type !== 'image' || !canvas) return;
@@ -229,12 +165,47 @@ const PropertiesPanel: React.FC = () => {
   const isTextObject = activeObject?.type === 'i-text' || activeObject?.type === 'text';
   const isImageObject = activeObject?.type === 'image';
 
+  // Show layers panel if showLayers is true
+  if (showLayers) {
+    return (
+      <div className="space-y-4">
+        <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-4 border border-gray-700/50">
+          <div className="flex items-center justify-between">
+            <h3 className="text-white font-bold text-lg flex items-center">
+              <RectangleStackIcon className="h-5 w-5 mr-2 text-green-400" />
+              Layers
+            </h3>
+            <button
+              onClick={() => setShowLayers(false)}
+              className="text-gray-400 hover:text-white transition-colors text-sm bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded"
+            >
+              Close
+            </button>
+          </div>
+          <p className="text-gray-400 text-sm mt-1">Manage your canvas layers</p>
+        </div>
+        <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-xl p-4 border border-gray-700/50">
+          <LayersPanel />
+        </div>
+      </div>
+    );
+  }
+
   if (!activeObject) {
     return (
-      <div className="bg-gray-800 rounded-lg p-3 overflow-y-auto max-h-96 min-w-[320px]">
-        <h3 className="text-white font-bold text-base mb-3">Properties</h3>
-        <div className="text-gray-400 text-sm text-center py-8">
-          Select an object to edit its properties
+      <div className="space-y-4">
+        <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-4 border border-gray-700/50">
+          <h3 className="text-white font-bold text-lg mb-2 flex items-center">
+            <SparklesIcon className="h-5 w-5 mr-2 text-purple-400" />
+            Properties
+          </h3>
+          <div className="text-gray-400 text-sm text-center py-8 flex flex-col items-center">
+            <div className="w-16 h-16 bg-gray-700/50 rounded-full flex items-center justify-center mb-4">
+              <SparklesIcon className="h-8 w-8 text-gray-500" />
+            </div>
+            <p className="font-medium">No Object Selected</p>
+            <p className="text-xs mt-1">Click on any element to edit its properties</p>
+          </div>
         </div>
       </div>
     );
@@ -261,41 +232,53 @@ const PropertiesPanel: React.FC = () => {
   ];
 
   return (
-    <div className="bg-gray-800 rounded-lg p-3 overflow-y-auto max-h-96 min-w-[320px]">
-      <h3 className="text-white font-bold text-base mb-3 flex items-center">
-        <SparklesIcon className="h-4 w-4 mr-2" />
-        Properties
-      </h3>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-4 border border-gray-700/50">
+        <h3 className="text-white font-bold text-lg mb-2 flex items-center">
+          <SparklesIcon className="h-5 w-5 mr-2 text-purple-400" />
+          Properties
+        </h3>
+        <p className="text-gray-400 text-sm">
+          {activeObject.type === 'i-text' || activeObject.type === 'text' ? '📝 Text Element' : 
+           activeObject.type === 'image' ? '🖼️ Image Element' : '🎨 Shape Element'}
+        </p>
+      </div>
+      
+      {/* Properties Content */}
+      <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-xl p-4 border border-gray-700/50 space-y-6">
 
-      <div className="space-y-4">
         {/* Layer Controls */}
-        <div>
-          <label className="text-gray-300 text-sm font-medium mb-2 block">Layer Order</label>
+        <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700/30">
+          <label className="text-purple-300 text-sm font-semibold mb-3 block flex items-center">
+            <ArrowUpIcon className="h-4 w-4 mr-2" />
+            Layer Order
+          </label>
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={bringForward}
-              className="bg-gray-800 hover:bg-gray-700 text-white py-1.5 px-2 rounded-lg transition-colors flex items-center justify-center space-x-1 text-xs"
+              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-2 px-3 rounded-lg transition-all duration-200 flex items-center justify-center space-x-1 text-xs font-medium shadow-lg"
             >
               <ArrowUpIcon className="h-3 w-3" />
-              <span>Fwd</span>
+              <span>Forward</span>
             </button>
             <button
               onClick={sendBackward}
-              className="bg-gray-800 hover:bg-gray-700 text-white py-1.5 px-2 rounded-lg transition-colors flex items-center justify-center space-x-1 text-xs"
+              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-3 rounded-lg transition-all duration-200 flex items-center justify-center space-x-1 text-xs font-medium shadow-lg"
             >
               <ArrowDownIcon className="h-3 w-3" />
-              <span>Back</span>
+              <span>Backward</span>
             </button>
             <button
               onClick={bringToFront}
-              className="bg-gray-800 hover:bg-gray-700 text-white py-1.5 px-2 rounded-lg transition-colors flex items-center justify-center space-x-1 text-xs"
+              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 px-3 rounded-lg transition-all duration-200 flex items-center justify-center space-x-1 text-xs font-medium shadow-lg"
             >
               <ArrowUpCircleIcon className="h-3 w-3" />
               <span>Front</span>
             </button>
             <button
               onClick={sendToBack}
-              className="bg-gray-800 hover:bg-gray-700 text-white py-1.5 px-2 rounded-lg transition-colors flex items-center justify-center space-x-1 text-xs"
+              className="bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white py-2 px-3 rounded-lg transition-all duration-200 flex items-center justify-center space-x-1 text-xs font-medium shadow-lg"
             >
               <ArrowDownCircleIcon className="h-3 w-3" />
               <span>Back</span>
@@ -304,41 +287,21 @@ const PropertiesPanel: React.FC = () => {
         </div>
 
         {/* Fill Color */}
-        <div>
-          <label className="text-gray-300 text-sm font-medium mb-2 block">Fill Color</label>
-          <div className="flex items-center space-x-2">
-            <input
-              type="color"
-              value={properties.fill}
-              onChange={(e) => handlePropertyChange('fill', e.target.value)}
-              className="w-12 h-10 rounded cursor-pointer"
-            />
-            <input
-              type="text"
-              value={properties.fill}
-              onChange={(e) => handlePropertyChange('fill', e.target.value)}
-              className="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+        <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700/30">
+          <ColorPicker
+            label="🎨 Fill Color"
+            value={properties.fill}
+            onChange={(color) => handlePropertyChange('fill', color)}
+          />
         </div>
 
-        {/* Stroke */}
-        <div>
-          <label className="text-gray-300 text-sm font-medium mb-2 block">Stroke Color</label>
-          <div className="flex items-center space-x-2">
-            <input
-              type="color"
-              value={properties.stroke}
-              onChange={(e) => handlePropertyChange('stroke', e.target.value)}
-              className="w-12 h-10 rounded cursor-pointer"
-            />
-            <input
-              type="text"
-              value={properties.stroke}
-              onChange={(e) => handlePropertyChange('stroke', e.target.value)}
-              className="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+        {/* Stroke Color */}
+        <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700/30">
+          <ColorPicker
+            label="🖖 Stroke Color"
+            value={properties.stroke}
+            onChange={(color) => handlePropertyChange('stroke', color)}
+          />
         </div>
 
         {/* Stroke Width */}
@@ -451,22 +414,18 @@ const PropertiesPanel: React.FC = () => {
             </div>
 
             {/* Text Shadow */}
-            <div>
-              <label className="text-gray-300 text-sm font-medium mb-2 block">Text Shadow</label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="color"
-                  value={properties.shadow || '#000000'}
-                  onChange={(e) => handleShadowChange(e.target.value)}
-                  className="w-12 h-10 rounded cursor-pointer"
-                />
-                <button
-                  onClick={() => handleShadowChange('')}
-                  className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-2 px-3 rounded-lg transition-colors text-sm"
-                >
-                  Remove Shadow
-                </button>
-              </div>
+            <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700/30">
+              <ColorPicker
+                label="🌆 Text Shadow"
+                value={properties.shadow || '#000000'}
+                onChange={handleShadowChange}
+              />
+              <button
+                onClick={() => handleShadowChange('')}
+                className="w-full mt-3 bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded-lg transition-colors text-sm font-medium"
+              >
+                Remove Shadow
+              </button>
             </div>
 
             {/* Character Spacing */}
@@ -503,89 +462,7 @@ const PropertiesPanel: React.FC = () => {
           </>
         )}
 
-        {/* Image-specific properties */}
-        {isImageObject && (
-          <>
-            <div className="border-t border-gray-800 pt-4">
-              <h4 className="text-white font-semibold mb-3 text-sm">Image Enhancement</h4>
-            </div>
-
-            {/* Brightness */}
-            <div>
-              <label className="text-gray-300 text-sm font-medium mb-2 block">
-                Brightness: {properties.brightness}
-              </label>
-              <input
-                type="range"
-                min="-1"
-                max="1"
-                step="0.01"
-                value={properties.brightness}
-                onChange={(e) => applyImageFilter('brightness', Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-
-            {/* Contrast */}
-            <div>
-              <label className="text-gray-300 text-sm font-medium mb-2 block">
-                Contrast: {properties.contrast}
-              </label>
-              <input
-                type="range"
-                min="-1"
-                max="1"
-                step="0.01"
-                value={properties.contrast}
-                onChange={(e) => applyImageFilter('contrast', Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-
-            {/* Saturation */}
-            <div>
-              <label className="text-gray-300 text-sm font-medium mb-2 block">
-                Saturation: {properties.saturation}
-              </label>
-              <input
-                type="range"
-                min="-1"
-                max="1"
-                step="0.01"
-                value={properties.saturation}
-                onChange={(e) => applyImageFilter('saturation', Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-
-            {/* Blur */}
-            <div>
-              <label className="text-gray-300 text-sm font-medium mb-2 block">
-                Blur: {properties.blur}%
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                step="1"
-                value={properties.blur}
-                onChange={(e) => applyImageFilter('blur', Number(e.target.value))}
-                className="w-full"
-              />
-            </div>
-
-            {/* Remove Background */}
-            <div>
-              <button
-                onClick={removeBackground}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-4 rounded-lg transition-all duration-200 font-semibold"
-              >
-                ✨ Remove White Background
-              </button>
-              <p className="text-xs text-gray-400 mt-2">Works best with white backgrounds</p>
-            </div>
-          </>
-        )}
+        {/* Image-specific properties - removed */}
       </div>
     </div>
   );

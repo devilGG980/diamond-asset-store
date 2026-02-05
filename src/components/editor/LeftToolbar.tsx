@@ -1,21 +1,36 @@
 import React, { useRef, useState } from 'react';
 import * as fabric from 'fabric';
 import { useEditorStore } from './useEditorStore';
-import LayersPanel from './LayersPanel';
-import PropertiesPanel from './PropertiesPanel';
+import StickersPanel from './StickersPanel';
+import BrushesTool from './BrushesTool';
+import ShapesPanel from './ShapesPanel';
+import BackgroundsPanel from './BackgroundsPanel';
+import AssetsPanel from './AssetsPanel';
+import GlowTool from './GlowTool';
+import { useNavigate } from 'react-router-dom';
 
 import {
   PhotoIcon,
   DocumentTextIcon,
   RectangleStackIcon,
-  CogIcon,
+  Squares2X2Icon,
+  FaceSmileIcon,
+  PaintBrushIcon,
+  SwatchIcon,
+  SparklesIcon,
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 
 const LeftToolbar: React.FC = () => {
-  const { canvas, addObject } = useEditorStore();
+  const { canvas, addObject, setShowLayers } = useEditorStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [activePanel, setActivePanel] = useState<'layers' | 'properties' | null>(null);
+  const navigate = useNavigate();
+  const [showStickers, setShowStickers] = useState(false);
+  const [showBrushes, setShowBrushes] = useState(false);
+  const [showShapes, setShowShapes] = useState(false);
+  const [showBackgrounds, setShowBackgrounds] = useState(false);
+  const [showAssets, setShowAssets] = useState(false);
+  const [showGlow, setShowGlow] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -73,42 +88,75 @@ const LeftToolbar: React.FC = () => {
     toast.success('Text added to canvas');
   };
 
-
-
-
-
+  // Compact tools array
   const tools = [
     {
+      icon: SparklesIcon,
+      label: 'Assets',
+      onClick: () => setShowAssets(true),
+      color: 'bg-cyan-600 hover:bg-cyan-700',
+    },
+    {
       icon: PhotoIcon,
-      label: 'Upload Image',
+      label: 'Images',
       onClick: () => fileInputRef.current?.click(),
       color: 'bg-purple-600 hover:bg-purple-700',
     },
     {
       icon: DocumentTextIcon,
-      label: 'Add Text',
+      label: 'Text',
       onClick: addText,
       color: 'bg-blue-600 hover:bg-blue-700',
     },
     {
-      icon: RectangleStackIcon,
-      label: 'Layers',
-      onClick: () => setActivePanel(activePanel === 'layers' ? null : 'layers'),
-      color: activePanel === 'layers' ? 'bg-green-700' : 'bg-green-600 hover:bg-green-700',
+      icon: Squares2X2Icon,
+      label: 'Shapes',
+      onClick: () => setShowShapes(true),
+      color: 'bg-red-600 hover:bg-red-700',
     },
     {
-      icon: CogIcon,
-      label: 'Properties',
-      onClick: () => setActivePanel(activePanel === 'properties' ? null : 'properties'),
-      color: activePanel === 'properties' ? 'bg-orange-700' : 'bg-orange-600 hover:bg-orange-700',
+      icon: FaceSmileIcon,
+      label: 'Stickers',
+      onClick: () => setShowStickers(true),
+      color: 'bg-pink-600 hover:bg-pink-700',
+    },
+    {
+      icon: PaintBrushIcon,
+      label: 'Brushes',
+      onClick: () => setShowBrushes(true),
+      color: 'bg-indigo-600 hover:bg-indigo-700',
+    },
+    {
+      icon: SparklesIcon,
+      label: 'Glow',
+      onClick: () => setShowGlow(true),
+      color: 'bg-violet-600 hover:bg-violet-700',
+    },
+    {
+      icon: DocumentTextIcon,
+      label: 'Crop',
+      onClick: () => navigate('/pen-crop'),
+      color: 'bg-teal-600 hover:bg-teal-700',
+    },
+    {
+      icon: SwatchIcon,
+      label: 'Backgrounds',
+      onClick: () => setShowBackgrounds(true),
+      color: 'bg-orange-600 hover:bg-orange-700',
+    },
+    {
+      icon: RectangleStackIcon,
+      label: 'Layers',
+      onClick: () => setShowLayers?.(true),
+      color: 'bg-green-600 hover:bg-green-700',
     },
   ];
 
 
 
   return (
-    <div className="w-80 bg-gray-900 border-r border-gray-800 p-3 overflow-y-auto flex-shrink-0 min-w-[320px]">
-      <h3 className="text-white font-bold text-base mb-3">Design Tools</h3>
+    <div className="w-40 sm:w-48 md:w-56 lg:w-64 bg-gray-900 border-r border-gray-800 p-2 overflow-y-auto flex-shrink-0">
+      <h3 className="text-white font-bold text-xs sm:text-sm mb-2">Tools</h3>
       
       {/* Hidden file input */}
       <input
@@ -120,35 +168,58 @@ const LeftToolbar: React.FC = () => {
       />
 
       {/* Tool buttons */}
-      <div className="space-y-2 mb-4">
+      <div className="space-y-1.5">
         {tools.map((tool, index) => {
           const Icon = tool.icon;
           return (
             <button
               key={index}
               onClick={tool.onClick}
-              className={`w-full ${tool.color} text-white py-2 px-3 rounded-lg transition-all duration-200 flex items-center space-x-2 transform hover:scale-105`}
+              className={`w-full ${tool.color} text-white py-2 px-2 rounded-md transition-all duration-200 flex items-center space-x-2 hover:scale-[1.02]`}
             >
-              <Icon className="h-4 w-4" />
-              <span className="text-sm font-medium">{tool.label}</span>
+              <Icon className="h-5 w-5 sm:h-4 sm:w-4" />
+              <span className="text-xs font-medium hidden sm:inline">{tool.label}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Panel Content */}
-      {activePanel === 'layers' && (
-        <div className="border-t border-gray-800 pt-4">
-          <LayersPanel />
-        </div>
-      )}
-      
-      {activePanel === 'properties' && (
-        <div className="border-t border-gray-800 pt-4">
-          <PropertiesPanel />
-        </div>
-      )}
+      {/* Shapes Panel */}
+      <ShapesPanel
+        isOpen={showShapes}
+        onClose={() => setShowShapes(false)}
+      />
 
+      {/* Stickers Panel */}
+      <StickersPanel
+        isOpen={showStickers}
+        onClose={() => setShowStickers(false)}
+      />
+
+      {/* Brushes Tool */}
+      <BrushesTool
+        isOpen={showBrushes}
+        onClose={() => setShowBrushes(false)}
+      />
+
+      {/* Assets Panel */}
+      <AssetsPanel
+        isOpen={showAssets}
+        onClose={() => setShowAssets(false)}
+      />
+
+      {/* Glow Tool */}
+      <GlowTool
+        isOpen={showGlow}
+        onClose={() => setShowGlow(false)}
+      />
+
+
+      {/* Backgrounds Panel */}
+      <BackgroundsPanel
+        isOpen={showBackgrounds}
+        onClose={() => setShowBackgrounds(false)}
+      />
     </div>
   );
 };

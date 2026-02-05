@@ -1,148 +1,152 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import PageSEO from '../components/SEO/PageSEO';
 
-const PrivacyPolicy: React.FC = () => {
+const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Back Button */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
-        >
-          <Link
-            to="/"
-            className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors"
-          >
-            <ArrowLeftIcon className="h-5 w-5" />
-            <span>Back to Home</span>
-          </Link>
-        </motion.div>
+    <div className="container mx-auto p-4">
+      <PageSEO
+        title="Privacy Policy - EditorVault"
+        description="Read our Privacy Policy regarding data collection and usage."
+      />
+      <h1 className="text-4xl font-bold mb-4">Privacy Policy</h1>
+      <section>
+        <h2 className="text-2xl font-bold text-white mb-4">1. Information We Collect</h2>
+        <h3 className="text-lg font-semibold text-white mt-4 mb-2">1.1 Information You Provide</h3>
+        <p>
+          When you interact with our platform, we may collect:
+        </p>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>Name and email address</li>
+          <li>Payment information (processed securely by third-party providers)</li>
+          <li>Profile information and preferences</li>
+          <li>Communications you send to us</li>
+        </ul>
 
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl font-bold text-gradient mb-4">Privacy Policy</h1>
-          <p className="text-gray-400">Last updated: October 1, 2024</p>
-        </motion.div>
+        <h3 className="text-lg font-semibold text-white mt-4 mb-2">1.2 Automatically Collected Information</h3>
+        <p>When you use our service, we automatically collect:</p>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>IP address and device information</li>
+          <li>Browser type, version, and language settings</li>
+          <li>Operating system and screen resolution</li>
+          <li>Pages visited, time spent, and navigation patterns</li>
+          <li>Referring website or source</li>
+          <li>Clickstream data and interaction events</li>
+        </ul>
 
-        {/* Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="card prose prose-invert max-w-none"
-        >
-          <div className="space-y-8 text-gray-300">
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-4">1. Information We Collect</h2>
-              <p>
-                At Video Forge, we collect information you provide directly to us, such as when you create an account, 
-                make a purchase, or contact us. This may include your name, email address, and payment information.
-              </p>
-              <p>
-                We also automatically collect certain information when you use our service, including your IP address, 
-                browser type, operating system, and usage data.
-              </p>
-            </section>
+        <h3 className="text-lg font-semibold text-white mt-4 mb-2">1.3 Cookies and Tracking Technologies</h3>
+        <p>
+          We use cookies, web beacons, pixels, and similar technologies to enhance your experience
+          and analyze site usage. See our detailed Cookie Policy section below.
+        </p>
+      </section>
 
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-4">2. How We Use Your Information</h2>
-              <p>We use the information we collect to:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Provide, maintain, and improve our services</li>
-                <li>Process transactions and send related information</li>
-                <li>Send you technical notices and support messages</li>
-                <li>Respond to your comments and questions</li>
-                <li>Analyze usage patterns and trends</li>
-              </ul>
-            </section>
+      <section>
+        <h2 className="text-2xl font-bold text-white mb-4">2. How We Use Your Information</h2>
+        <p>We use collected information for the following purposes:</p>
+        <ul className="list-disc pl-6 space-y-2">
+          <li><strong>Service Delivery:</strong> To provide, maintain, and improve our platform and services</li>
+          <li><strong>Transactions:</strong> To process purchases and send transaction confirmations</li>
+          <li><strong>Communication:</strong> To send technical notices, updates, security alerts, and support messages</li>
+          <li><strong>Customer Support:</strong> To respond to your inquiries, comments, and questions</li>
+          <li><strong>Analytics:</strong> To analyze usage patterns, trends, and user behavior</li>
+          <li><strong>Marketing:</strong> To send promotional materials (with your consent where required)</li>
+          <li><strong>Security:</strong> To detect, prevent, and address technical issues and fraud</li>
+          <li><strong>Legal Compliance:</strong> To comply with legal obligations and enforce our terms</li>
+        </ul>
+      </section>
 
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-4">3. Information Sharing</h2>
-              <p>
-                We do not sell, trade, or rent your personal information to third parties. We may share your information 
-                in the following circumstances:
-              </p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>With your consent</li>
-                <li>To comply with legal obligations</li>
-                <li>To protect our rights and safety</li>
-                <li>In connection with a business transaction</li>
-              </ul>
-            </section>
+      <section>
+        <h2 className="text-2xl font-bold text-white mb-4">3. Information Sharing and Disclosure</h2>
+        <p>
+          We do not sell, trade, or rent your personal information to third parties. We may share your
+          information only in the following limited circumstances:
+        </p>
+        <ul className="list-disc pl-6 space-y-2">
+          <li><strong>With Your Consent:</strong> When you explicitly authorize us to share information</li>
+          <li><strong>Service Providers:</strong> With trusted third-party vendors who assist in operating our platform (e.g., hosting, analytics, payment processing)</li>
+          <li><strong>Legal Requirements:</strong> When required by law, court order, or government regulation</li>
+          <li><strong>Protection of Rights:</strong> To protect our rights, property, safety, or that of our users</li>
+          <li><strong>Business Transfers:</strong> In connection with mergers, acquisitions, or sale of assets</li>
+        </ul>
+      </section>
 
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-4">4. Cookies and Tracking</h2>
-              <p>
-                We use cookies and similar tracking technologies to collect and track information and to improve our service. 
-                You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
-              </p>
-              <h3 className="text-lg font-semibold text-white mt-4 mb-2">Google AdSense</h3>
-              <p>
-                We use Google AdSense to display advertisements. Google may use cookies to serve ads based on your prior 
-                visits to this website or other websites. You can opt out of personalized advertising by visiting 
-                <a href="https://www.google.com/settings/ads" className="text-blue-400 hover:text-blue-300"> Google's ad settings</a>.
-              </p>
-            </section>
+      <section>
+        <h2 className="text-2xl font-bold text-white mb-4">4. Cookies and Tracking Technologies</h2>
+        <p>
+          We use cookies and similar tracking technologies to collect and track information about your
+          browsing behavior and to improve our service.
+        </p>
 
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-4">5. Data Security</h2>
-              <p>
-                We implement appropriate security measures to protect your personal information against unauthorized access, 
-                alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure.
-              </p>
-            </section>
+        <h3 className="text-lg font-semibold text-white mt-4 mb-2">Types of Cookies We Use:</h3>
+        <ul className="list-disc pl-6 space-y-2">
+          <li><strong>Essential Cookies:</strong> Required for basic site functionality and security</li>
+          <li><strong>Performance Cookies:</strong> Help us understand how visitors interact with our site</li>
+          <li><strong>Functional Cookies:</strong> Remember your preferences and personalize your experience</li>
+          <li><strong>Advertising Cookies:</strong> Used by our advertising partners to deliver relevant ads</li>
+        </ul>
 
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-4">6. Your Rights</h2>
-              <p>You have the right to:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Access and update your personal information</li>
-                <li>Request deletion of your personal information</li>
-                <li>Object to processing of your personal information</li>
-                <li>Request portability of your personal information</li>
-              </ul>
-            </section>
+        <h3 className="text-lg font-semibold text-white mt-4 mb-2">Cookie Management</h3>
+        <p>
+          You can manage your cookie preferences through your browser settings. Disabling cookies may
+          impact your experience on our platform.
+        </p>
+      </section>
 
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-4">7. Children's Privacy</h2>
-              <p>
-                Our service is not intended for children under 13. We do not knowingly collect personal information from 
-                children under 13. If you are a parent or guardian and believe your child has provided us with personal 
-                information, please contact us.
-              </p>
-            </section>
+      <section>
+        <h2 className="text-2xl font-bold text-white mb-4">6. Data Security</h2>
+        <p>
+          We implement industry-standard security measures to protect your personal information against
+          unauthorized access, alteration, disclosure, or destruction. Our security practices include:
+        </p>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>Encryption of data in transit using SSL/TLS protocols</li>
+          <li>Secure password storage using industry-standard hashing algorithms</li>
+          <li>Regular security audits and vulnerability assessments</li>
+          <li>Access controls and secure data centers</li>
+          <li>Employee training on data protection and privacy</li>
+        </ul>
+        <p className="mt-4">
+          However, no method of transmission over the internet or electronic storage is 100% secure.
+          While we strive to protect your information, we cannot guarantee absolute security.
+        </p>
+      </section>
 
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-4">8. Changes to This Policy</h2>
-              <p>
-                We may update this privacy policy from time to time. We will notify you of any changes by posting the new 
-                privacy policy on this page and updating the "Last updated" date.
-              </p>
-            </section>
+      <section>
+        <h2 className="text-2xl font-bold text-white mb-4">7. Data Retention</h2>
+        <p>
+          We retain your personal information only for as long as necessary to fulfill the purposes
+          outlined in this Privacy Policy or as required by law.
+        </p>
+      </section>
 
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-4">9. Contact Us</h2>
-              <p>
-                If you have any questions about this privacy policy, please contact us at:
-              </p>
-              <div className="bg-gray-800 p-4 rounded-lg mt-4">
-                <p><strong>Email:</strong> privacy@videoforges.web.app</p>
-                <p><strong>Address:</strong> Video Forge, Digital Media Services</p>
-              </div>
-            </section>
-          </div>
-        </motion.div>
-      </div>
+      <section>
+        <h2 className="text-2xl font-bold text-white mb-4">11. Third-Party Links and Services</h2>
+        <p>
+          Our website may contain links to third-party websites, services, or applications. We are not responsible
+          for the privacy practices of these third parties. We encourage you to read the privacy policies of any
+          third-party services you visit or use.
+        </p>
+
+        <h3 className="text-lg font-semibold text-white mt-4 mb-2">Third-Party Services We Use:</h3>
+        <ul className="list-disc pl-6 space-y-2">
+          <li><strong>Google Analytics:</strong> For website analytics and reporting</li>
+          <li><strong>Google AdSense:</strong> For advertising services</li>
+          <li><strong>Payment Processors:</strong> For secure payment processing</li>
+          <li><strong>CDN Providers:</strong> For content delivery and performance optimization</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-bold text-white mb-4">12. Changes to This Privacy Policy</h2>
+        <p>
+          We may update this Privacy Policy from time to time to reflect changes in our practices or
+          applicable laws. We encourage you to review this page periodically for the latest information.
+        </p>
+      </section>
     </div>
   );
 };
 
 export default PrivacyPolicy;
+
+

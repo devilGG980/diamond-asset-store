@@ -102,7 +102,7 @@ const OptimizedVideo: React.FC<OptimizedVideoProps> = ({
       onLoadedData={handleLoadedData}
       onCanPlayThrough={handleCanPlayThrough}
       onError={handleError}
-      preload={isInView ? 'auto' : preload}
+      preload={isInView ? (preload || 'metadata') : 'none'}
       style={style || {
         aspectRatio: '16/9',
         objectFit: 'contain',

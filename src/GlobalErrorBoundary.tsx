@@ -12,10 +12,16 @@ export default class GlobalErrorBoundary extends React.Component<React.PropsWith
   }
 
   static getDerivedStateFromError(error: any) {
+    const errorMsg = String(error?.message || error || '');
+    if (errorMsg.includes('Script error.') || errorMsg.includes('Uncaught runtime errors')) {
+      return { hasError: false };
+    }
     return { hasError: true, error };
   }
 
   componentDidCatch(error: any, info: any) {
+    const errorMsg = String(error?.message || error || '');
+    if (errorMsg.includes('Script error.')) return;
     // eslint-disable-next-line no-console
     console.error('Global error caught:', error, info);
   }
@@ -48,7 +54,7 @@ export default class GlobalErrorBoundary extends React.Component<React.PropsWith
             <p className="mb-4 text-gray-200">The app crashed. This commonly happens when an old cache or service worker conflicts with new files, or when a route/component throws at runtime.</p>
             <button onClick={this.handleClearCaches} className="btn-primary mb-4">Clear caches and reload</button>
             <pre className="whitespace-pre-wrap text-xs bg-gray-900 p-3 rounded border border-gray-700 overflow-auto max-h-96">
-{String(this.state.error?.stack || this.state.error || 'Unknown error')}
+              {String(this.state.error?.stack || this.state.error || 'Unknown error')}
             </pre>
           </div>
         </div>
