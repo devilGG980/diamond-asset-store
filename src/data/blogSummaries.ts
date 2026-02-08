@@ -17,6 +17,7 @@ export interface BlogPost {
     likes?: number;
     thumbnail?: string;
     difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
+    schema?: any[]; // For HowTo, FAQ, etc.
     videoLink?: string;
     image?: string;
 }

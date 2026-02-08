@@ -61,6 +61,95 @@ function cleanExcerpt(text) {
         .trim();
 }
 
+/**
+ * Parses content to find "Step X" or numbered lists that function as steps.
+ * Returns a HowTo Schema object or null.
+ */
+function extractHowToSchema(content, title) {
+    const lines = content.split('\n');
+    const steps = [];
+
+    // Regex for "Step 1:", "Step 1.", "1. ", "## Step 1"
+    const stepRegex = /^(?:#+\s*)?(?:Step\s+\d+|[1-9]\.)[:.]?\s+(.+)/i;
+
+    // Iterate lines to find steps
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const match = line.match(stepRegex);
+        if (match) {
+            steps.push({
+                "@type": "HowToStep",
+                "name": match[1].trim(),
+                "text": match[1].trim(), // Could fetch next lines for description, but complex
+                "url": `https://editorvault.web.app/blog#step-${steps.length + 1}`
+            });
+        }
+    }
+
+    if (steps.length >= 3) {
+        return {
+            "@type": "HowTo",
+            "name": title,
+            "step": steps
+        };
+    }
+    return null;
+}
+
+/**
+ * Parses content to find an "FAQ" section.
+ * Returns an FAQPage Schema object or null.
+ */
+function extractFAQSchema(content) {
+    const lines = content.split('\n');
+    const faqs = [];
+    let inFAQ = false;
+    let currentQuestion = null;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+
+        // Detect FAQ Header
+        if (/^#+\s*FAQ/i.test(line)) {
+            inFAQ = true;
+            continue;
+        }
+
+        if (inFAQ) {
+            // Header implies Question
+            if (line.startsWith('#')) {
+                // Save previous if exists
+                if (currentQuestion) {
+                    faqs.push(currentQuestion);
+                }
+                currentQuestion = {
+                    "@type": "Question",
+                    "name": line.replace(/^#+\s*/, '').trim(),
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": ""
+                    }
+                };
+            } else if (currentQuestion && line.length > 0) {
+                // Append text to Answer
+                currentQuestion.acceptedAnswer.text += line + " ";
+            }
+        }
+    }
+    // Push last question
+    if (currentQuestion) {
+        faqs.push(currentQuestion);
+    }
+
+    if (faqs.length >= 2) {
+        return {
+            "@type": "FAQPage",
+            "mainEntity": faqs
+        };
+    }
+    return null;
+}
+
 function processFiles() {
     try {
         if (!fs.existsSync(contentFactoryPath)) {
@@ -72,9 +161,9 @@ function processFiles() {
         const posts = [];
         const internalLinksMap = new Map(); // Title -> Slug
 
-        console.log(`Found ${files.length} files. Processing for SEO...`);
+        console.log(`Found ${files.length} files. Processing for SEO + Schema...`);
 
-        // Pass 1: Extract Metadata
+        // Pass 1: Extract Metadata & Schema
         files.forEach(file => {
             const content = fs.readFileSync(path.join(contentFactoryPath, file), 'utf-8');
             const lines = content.split('\n');
@@ -86,7 +175,6 @@ function processFiles() {
                 .replace(/[^\w\s-]/g, '')
                 .replace(/\s+/g, '-');
 
-            // Extract Excerpt (First non-empty, non-header paragraph)
             let excerpt = '';
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].trim();
@@ -95,16 +183,23 @@ function processFiles() {
                     break;
                 }
             }
-            if (excerpt.length > 155) excerpt = excerpt.substring(0, 152) + '...'; // Standard SEO Meta Description length
+            if (excerpt.length > 155) excerpt = excerpt.substring(0, 152) + '...';
 
             const category = getCategoryFromKeywords(title + ' ' + content);
 
-            // Add Category-Specific Tags
             const extraTags = categoryTags[category] || [];
             const manualTags = title.split(' ').filter(w => w.length > 4).map(w => w.toLowerCase().replace(/[^a-z0-9]/g, ''));
-            const tags = [...new Set([category, ...extraTags, ...manualTags])].slice(0, 8); // Limit to 8 relevant tags
+            const tags = [...new Set([category, ...extraTags, ...manualTags])].slice(0, 8);
 
             internalLinksMap.set(title.toLowerCase(), slug);
+
+            // Schema Extraction
+            const schemas = [];
+            const howTo = extractHowToSchema(content, title);
+            if (howTo) schemas.push(howTo);
+
+            const faq = extractFAQSchema(content);
+            if (faq) schemas.push(faq);
 
             posts.push({
                 id: slug,
@@ -119,27 +214,24 @@ function processFiles() {
                 views: Math.floor(Math.random() * 500),
                 likes: Math.floor(Math.random() * 50),
                 difficulty: 'Beginner',
-                content: content
+                content: content,
+                schema: schemas.length > 0 ? schemas : null // Store detected schemas
             });
         });
 
         // Pass 2: "Crazy" Internal Linking
         console.log('Generating smart internal links...');
 
-        // Combine Blog Titles + Static Keywords
         const dynamicLinkKeys = Array.from(internalLinksMap.keys()).sort((a, b) => b.length - a.length);
         const staticLinkKeys = Object.keys(staticKeywordLinks).sort((a, b) => b.length - a.length);
 
         posts.forEach(post => {
             let linkedContent = post.content;
             let linksAdded = 0;
-            const maxLinks = 8; // Increased limit for "Crazy" SEO
+            const maxLinks = 8;
 
-            // 2.1 Link Static Pages (Store, Editor, etc.) - Priority
             for (const key of staticLinkKeys) {
                 if (linksAdded >= maxLinks) break;
-
-                // Regex to match whole word, case insensitive, not already in a link
                 const regex = new RegExp(`\\b(${key})\\b(?![^\\[]*\\])`, 'i');
                 if (regex.test(linkedContent)) {
                     if (!linkedContent.includes(`](${staticKeywordLinks[key]})`)) {
@@ -149,13 +241,10 @@ function processFiles() {
                 }
             }
 
-            // 2.2 Link Other Blog Posts
             for (const key of dynamicLinkKeys) {
                 if (linksAdded >= maxLinks) break;
                 if (key === post.title.toLowerCase()) continue;
 
-                // Simple check to avoid linking common words if they match a title exactly but usually wouldn't desire a link? 
-                // Actually, if a blog title is "Editing", we want to link "editing".
                 const regex = new RegExp(`\\b(${key})\\b(?![^\\[]*\\])`, 'i');
                 if (regex.test(linkedContent)) {
                     if (!linkedContent.includes(`](${internalLinksMap.get(key)})`) && !linkedContent.includes(`](/blog/${internalLinksMap.get(key)})`)) {
@@ -167,7 +256,6 @@ function processFiles() {
             post.content = linkedContent;
         });
 
-        // Separate Summaries and Content
         const summaries = posts.map(({ content, ...summary }) => summary);
         const contentMap = {};
         posts.forEach(p => contentMap[p.id] = p.content);
@@ -178,7 +266,7 @@ function processFiles() {
         };
 
         fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
-        console.log(`Successfully processed ${posts.length} posts with SEO enhancements. Data written to ${outputPath}`);
+        console.log(`Successfully processed ${posts.length} posts with SEO Schema enhancements. Data written to ${outputPath}`);
     } catch (error) {
         console.error('Error processing files:', error);
     }

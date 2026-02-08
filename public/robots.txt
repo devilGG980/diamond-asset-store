@@ -1,25 +1,35 @@
-# EditorVault Robots.txt
+# EditorVault Robots.txt - Optimized for Maximum Crawling
 # https://editorvault.web.app/robots.txt
 
 User-agent: *
 Allow: /
+Crawl-delay: 0
 
-# Sitemaps
+# Sitemaps (Primary)
 Sitemap: https://editorvault.web.app/sitemap.xml
 
-# Disallow admin or sensitive paths (if any)
-# Disallow: /admin/
-# Disallow: /api/
+# Disallow unnecessary paths to save crawl budget
+Disallow: /static/
+Disallow: /*.json$
+Disallow: /*.map$
 
-# Allow all major search engine bots
+# Allow CSS and JS for accurate rendering
+Allow: /static/css/
+Allow: /static/js/
+
+# Specific bot configurations for optimal crawling
+
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
 User-agent: Googlebot-Image
 Allow: /
+Crawl-delay: 0
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Slurp
 Allow: /
@@ -29,12 +39,46 @@ Allow: /
 
 User-agent: Baiduspider
 Allow: /
+Crawl-delay: 2
 
 User-agent: YandexBot
 Allow: /
+Crawl-delay: 1
 
+# Social Media Bots (Important for sharing)
 User-agent: facebookexternalhit
 Allow: /
+Crawl-delay: 0
 
 User-agent: Twitterbot
+Allow: /  
+Crawl-delay: 0
+
+User-agent: LinkedInBot
 Allow: /
+Crawl-delay: 0
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# AI Bots (Control access if needed)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Additional Sitemap refs for redundancy
+Sitemap: https://editorvault.web.app/sitemap.xml

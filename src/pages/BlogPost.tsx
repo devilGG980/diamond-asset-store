@@ -80,6 +80,46 @@ const BlogPost: React.FC = () => {
     );
   }
 
+  const baseStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "image": post.image ? [post.image] : [],
+    "datePublished": post.publishDate,
+    "dateModified": post.publishDate,
+    "author": [{
+      "@type": "Person",
+      "name": post.author || "EditorVault Team",
+      "url": "https://editorvault.web.app/"
+    }],
+    "publisher": {
+      "@type": "Organization",
+      "name": "EditorVault",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://editorvault.web.app/logo512.png"
+      }
+    },
+    "description": post.excerpt,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": window.location.href
+    },
+    "articleSection": post.category,
+    "keywords": post.tags.join(", "),
+    "wordCount": post.content ? post.content.split(/\s+/).length : 0,
+    "isAccessibleForFree": true,
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": ["h1", ".blog-excerpt"]
+    },
+    "inLanguage": "en-US"
+  };
+
+  const finalStructuredData = post.schema
+    ? [baseStructuredData, ...post.schema]
+    : baseStructuredData;
+
   return (
     <>
       <PageSEO
@@ -87,41 +127,9 @@ const BlogPost: React.FC = () => {
         title={post.title}
         description={post.excerpt}
         keywords={post.tags}
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "headline": post.title,
-          "image": post.image ? [post.image] : [],
-          "datePublished": post.publishDate,
-          "dateModified": post.publishDate,
-          "author": [{
-            "@type": "Person",
-            "name": post.author || "EditorVault Team",
-            "url": "https://editorvault.web.app/"
-          }],
-          "publisher": {
-            "@type": "Organization",
-            "name": "EditorVault",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "https://editorvault.web.app/logo512.png"
-            }
-          },
-          "description": post.excerpt,
-          "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": window.location.href
-          },
-          "articleSection": post.category,
-          "keywords": post.tags.join(", "),
-          "wordCount": post.content ? post.content.split(/\s+/).length : 0,
-          "isAccessibleForFree": true,
-          "speakable": {
-            "@type": "SpeakableSpecification",
-            "cssSelector": ["h1", ".blog-excerpt"]
-          },
-          "inLanguage": "en-US"
-        }}
+        imageUrl={post.image || 'https://editorvault.web.app/og-image.png'}
+        structuredData={finalStructuredData}
+        canonicalUrl={`https://editorvault.web.app/blog/${post.id}`}
         breadcrumbs={[
           { name: 'Home', url: '/' },
           { name: 'Blog', url: '/blog' },

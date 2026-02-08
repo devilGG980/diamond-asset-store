@@ -164,6 +164,7 @@ const Store: React.FC = () => {
         description={getPageDescription()}
         keywords={getKeywords()}
         structuredData={storeStructuredData}
+        canonicalUrl={'https://editorvault.web.app/store'}
         breadcrumbs={breadcrumbs}
       />
       <div className="min-h-screen p-2 sm:p-4 safe-area-top">
