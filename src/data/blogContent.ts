@@ -1,5 +1,7 @@
-﻿
-export const blogContent: Record<string, string> = {
+
+import { importedContent } from './importedBlogs';
+
+const localContent: Record<string, string> = {
     'how-to-change-video-thumbnail': `If you're still relying on the auto-generated thumbnail YouTube picks for you, you're leaving thousands of views on the table. In this guide on **how to change a video thumbnail**, I will show you the exact steps I used to fix my channel. I learned this the hard way—my first ten videos flopped because I didn't verify my account to upload custom images.
 
 Here is the exact, step-by-step process to change your thumbnail on every major platform, plus a few tricks I use to make them actually clickable.
@@ -106,7 +108,7 @@ Bad video with good audio is watchable. Good video with bad audio is unwatchable
 
 ## Conclusion
 
-Speed isn't about rushing. It's about removing friction. Learn these shortcuts, organize your files, and you'll actually enjoy editing again.`,
+Speed isn't about rushing. It's about removing friction. Learn these shortcuts, organize your files, and you'll actually enjoy editing again. If you're looking for a more structured path to mastery, we highly recommend checking out our guide on the best [video editing courses](/blog/video-editing-course) available today.`,
 
     'best-iphone-video-editing-apps': `"Can I edit this on my phone?" Five years ago, I would have said no. Today, I edit about 30% of my content on my iPhone 15. The apps have gotten *that* good.
 
@@ -533,7 +535,7 @@ Not all of your 1280x720 canvas is "safe." YouTube overlays various elements on 
 - **Less is More:** Limit text to 3-4 words max. The thumbnail should tease the content, not read like a book.
 - **Brand Consistency:** Use consistent fonts and color grading so subscribers instantly recognize your uploads.
 
-By sticking to these specs and design principles, you ensure your videos have the best possible chance of being clicked.`,
+By sticking to these specs and design principles, you ensure your videos have the best possible chance of being clicked. For a deeper dive into what makes a thumbnail truly viral, check out our analysis of the [MrBeast thumbnail strategy](/blog/mrbeast-thumbnail-strategy).`,
 
     'mrbeast-thumbnail-strategy': `MrBeast (Jimmy Donaldson) isn't just the king of YouTube; he's the king of thumbnails. His team spends thousands of dollars and hours on a *single* thumbnail. Why? Because if no one clicks, no one watches.
 
@@ -645,7 +647,7 @@ Thumbnails started as automatic, low-res screenshots. Today, they are:
 
 ## Conclusion
 
-Never treat a thumbnail as an afterthought. It is the headline, the book cover, and the movie poster all rolled into one. If you want to succeed in digital media, mastering the art of the thumbnail must be your priority.`,
+Never treat a thumbnail as an afterthought. It is the headline, the book cover, and the movie poster all rolled into one. If you want to succeed in digital media, mastering the art of the thumbnail must be your priority. Once you've mastered the concept, learn [how to change a video thumbnail](/blog/how-to-change-video-thumbnail) to start applying it to your channel.`,
 
     'download-youtube-thumbnail': `Ever wondered how to **download a YouTube thumbnail** in high resolution? Whether you're a content creator wanting to archive your own work, a designer looking for inspiration, or a marketer analyzing competitors, getting your hands on the source image of a YouTube video is a common need.
 
@@ -3595,3 +3597,5 @@ Ready to **unblock someone on Facebook**? Navigate to your Settings, find the Bl
 
 Take control of your Facebook relationships today. Whether you're mending fences, correcting mistakes, or simply moving forward, unblocking someone is quick, easy, and completely reversible after the 48-hour waiting period. Restore your connections and manage your social network with confidence!`,
 };
+
+export const blogContent = { ...localContent, ...importedContent };

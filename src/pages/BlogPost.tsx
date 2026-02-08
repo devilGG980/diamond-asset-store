@@ -20,8 +20,10 @@ import toast from 'react-hot-toast';
 import { blogPosts, FullBlogPost as BlogPostType } from '../data/blogPosts';
 import { mockAssets } from '../data/assets';
 import { getRecommendedAssetsForPost, shouldPromoteThumbnailEditor } from '../utils/recommendationUtils';
-import NativeBannerAd from '../components/ads/NativeBannerAd';
+import BannerAd from '../components/ads/BannerAd';
+import LeaderboardAd from '../components/ads/LeaderboardAd';
 import BlogMobileActions from '../components/blog/BlogMobileActions';
+import { getCategoryGradient } from '../utils/styleUtils';
 
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -145,6 +147,9 @@ const BlogPost: React.FC = () => {
             </Link>
           </motion.div>
 
+          {/* Top Leaderboard Ad */}
+          <LeaderboardAd className="mb-8" />
+
           {/* Article Header */}
           <motion.header
             initial={{ opacity: 0, y: 20 }}
@@ -195,8 +200,11 @@ const BlogPost: React.FC = () => {
                   />
                 </div>
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-8xl">
-                  {post.thumbnail || '📝'}
+                <div className={`w-full h-full flex flex-col items-center justify-center p-8 bg-gradient-to-br ${getCategoryGradient(post.category)}`}>
+                  <div className="text-8xl mb-4">{post.thumbnail || '📝'}</div>
+                  <h2 className="text-3xl md:text-5xl font-bold text-white text-center max-w-3xl leading-tight opacity-90">
+                    {post.title}
+                  </h2>
                 </div>
               )}
             </div>
@@ -237,8 +245,8 @@ const BlogPost: React.FC = () => {
             transition={{ delay: 0.3 }}
             className="mb-12"
           >
-            {/* Native Banner Ad Container */}
-            <NativeBannerAd className="mb-12" />
+            {/* Banner Ad Container */}
+            <BannerAd className="mb-12" />
 
             {/* Table of Contents */}
             < TableOfContents content={post.content} />
@@ -267,6 +275,9 @@ const BlogPost: React.FC = () => {
             </div>
           </motion.div >
 
+
+          {/* Bottom Leaderboard Ad */}
+          <LeaderboardAd className="mb-16" label="Sponsored" />
 
           {/* Related Posts */}
           {
@@ -399,7 +410,7 @@ const BlogPost: React.FC = () => {
         </div >
 
         {/* Mobile Sticky Actions */}
-        <BlogMobileActions
+        < BlogMobileActions
           title={post.title}
           url={window.location.href}
           onLike={handleLike}

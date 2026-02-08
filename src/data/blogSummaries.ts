@@ -1,4 +1,7 @@
 
+
+import { importedSummaries } from './importedBlogs';
+
 export interface BlogPost {
     id: string;
     title: string;
@@ -18,7 +21,7 @@ export interface BlogPost {
     image?: string;
 }
 
-export const blogSummaries: BlogPost[] = [
+const localSummaries: BlogPost[] = [
     {
         id: 'how-to-change-video-thumbnail',
         title: 'How Can I Change a Thumbnail on a Video',
@@ -34,6 +37,22 @@ export const blogSummaries: BlogPost[] = [
         thumbnail: '🎬',
         difficulty: 'Beginner',
         image: 'https://cdn.jsdelivr.net/gh/devilGG980/diamond-asset-store@main/public/blog-images/thumbnail-tutorial.jpg'
+    },
+    {
+        id: 'clawdbot-seo-guide',
+        title: 'Mastering SEO with Clawdbot: A Comprehensive Guide',
+        excerpt: 'Discover how to leverage Clawdbot (OpenClaw) for automated SEO, semantic strategies, and achieving EZ ranking with high-quality content.',
+        category: 'SEO',
+        readTime: 6,
+        publishDate: '2026-02-06',
+        tags: ['clawdbot', 'openclaw', 'semantic seo', 'ez ranking', 'high quality content'],
+        featured: true,
+        author: 'Vansh Singh',
+        views: 0,
+        likes: 0,
+        thumbnail: '🤖',
+        difficulty: 'Intermediate',
+        image: 'https://cdn.jsdelivr.net/gh/devilGG980/diamond-asset-store@main/public/blog-images/clawdbot-seo-hero.png'
     },
     {
         id: 'video-editing-tips-2024',
@@ -1141,3 +1160,5 @@ export const blogSummaries: BlogPost[] = [
         image: 'https://cdn.jsdelivr.net/gh/devilGG980/diamond-asset-store@main/public/blog-images/facebook-unblock.webp'
     }
 ];
+
+export const blogSummaries = localSummaries.concat(importedSummaries);

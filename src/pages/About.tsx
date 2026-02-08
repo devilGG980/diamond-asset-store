@@ -14,6 +14,7 @@ import {
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
 import PageSEO from '../components/SEO/PageSEO';
+import LeaderboardAd from '../components/ads/LeaderboardAd';
 
 const About: React.FC = () => {
   return (
@@ -22,6 +23,25 @@ const About: React.FC = () => {
         title="About EditorVault - Free Video Editing Assets"
         description="Empowering creators with free video editing assets. Learn about our mission and the team behind EditorVault."
         keywords={['about editorvault', 'video editing community', 'free assets mission']}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "EditorVault",
+          "url": "https://editorvault.web.app",
+          "logo": "https://editorvault.web.app/logo512.png",
+          "sameAs": [
+            "https://www.youtube.com/@devilxdeath"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": "infomeryt0@gmail.com"
+          }
+        }}
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'About', url: '/about' }
+        ]}
       />
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
@@ -535,6 +555,9 @@ const About: React.FC = () => {
             </div>
           </div>
         </motion.div>
+
+        {/* Bottom Leaderboard Ad */}
+        <LeaderboardAd className="mb-8" />
 
         {/* Contact CTA */}
         <motion.div

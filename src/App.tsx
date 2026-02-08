@@ -114,6 +114,9 @@ const BlogPostImport = lazyWithRetry(() => import('./pages/BlogPost'));
 // FAQ component for frequently asked questions
 const FAQImport = lazyWithRetry(() => import('./pages/FAQ'));
 
+// NotFound component for 404 errors
+const NotFoundImport = lazyWithRetry(() => import('./pages/NotFound'));
+
 // No authentication required - all routes are public
 
 
@@ -169,8 +172,8 @@ const AppLayout: React.FC = () => {
               <Route path="/blog/:id" element={<BlogPostImport />} />
               <Route path="/faq" element={<FAQImport />} />
 
-              {/* Catch all route */}
-              <Route path="*" element={<Home />} />
+              {/* Catch all route - 404 */}
+              <Route path="*" element={<NotFoundImport />} />
             </Routes>
           </Suspense>
         </main>

@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
+import BannerAd from './ads/BannerAd';
 
 interface MarkdownRendererProps {
     content: string;
@@ -43,6 +44,46 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
 
     const cleanContent = normalizeContent(content);
 
+    // Split content by the ad placeholder
+    const parts = cleanContent.split('### [BLOG_BANNER_AD]');
+
+    const renderMarkdown = (text: string) => (
+        <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+                img: ({ node, src, alt, ...props }) => (
+                    <span className="block my-8">
+                        <LazyLoadImage
+                            src={src}
+                            alt={alt}
+                            effect="blur"
+                            wrapperClassName="w-full"
+                            className="rounded-xl shadow-2xl mx-auto"
+                            width="100%"
+                            {...props}
+                        />
+                    </span>
+                ),
+                a: ({ node, className, children, ...props }) => {
+                    const href = props.href || '';
+                    const isExternal = href.startsWith('http');
+                    return (
+                        <a
+                            className={className}
+                            {...props}
+                            target={isExternal ? "_blank" : undefined}
+                            rel={isExternal ? "noopener noreferrer" : undefined}
+                        >
+                            {children}
+                        </a>
+                    );
+                }
+            }}
+        >
+            {text}
+        </ReactMarkdown>
+    );
+
     return (
         <article className="prose prose-invert prose-lg max-w-none
             prose-headings:text-white prose-headings:font-bold
@@ -63,40 +104,14 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
             prose-th:bg-gray-800 prose-th:p-4 prose-th:text-white prose-th:border prose-th:border-gray-700
             prose-td:p-4 prose-td:text-gray-300 prose-td:border prose-td:border-gray-700
             ">
-            <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                    img: ({ node, src, alt, ...props }) => (
-                        <span className="block my-8">
-                            <LazyLoadImage
-                                src={src}
-                                alt={alt}
-                                effect="blur"
-                                wrapperClassName="w-full"
-                                className="rounded-xl shadow-2xl mx-auto"
-                                width="100%"
-                                {...props}
-                            />
-                        </span>
-                    ),
-                    a: ({ node, className, children, ...props }) => {
-                        const href = props.href || '';
-                        const isExternal = href.startsWith('http');
-                        return (
-                            <a
-                                className={className}
-                                {...props}
-                                target={isExternal ? "_blank" : undefined}
-                                rel={isExternal ? "noopener noreferrer" : undefined}
-                            >
-                                {children}
-                            </a>
-                        );
-                    }
-                }}
-            >
-                {cleanContent}
-            </ReactMarkdown>
+            {parts.map((part, index) => (
+                <React.Fragment key={index}>
+                    {renderMarkdown(part)}
+                    {index < parts.length - 1 && (
+                        <BannerAd className="my-12 overflow-hidden" />
+                    )}
+                </React.Fragment>
+            ))}
         </article>
     );
 };

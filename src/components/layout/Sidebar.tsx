@@ -38,7 +38,7 @@ const Sidebar: React.FC = React.memo(() => {
 
         {/* Adsterra Banner Ad */}
         <div
-          className="rounded-lg overflow-hidden bg-gray-800/30 flex justify-center items-center min-h-[250px]"
+          className="rounded-lg overflow-hidden flex justify-center items-center min-h-[250px]"
           ref={adContainerRef}
         >
           {/* Ad will be injected here */}

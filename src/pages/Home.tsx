@@ -15,7 +15,8 @@ import {
   ClockIcon,
 } from '@heroicons/react/24/outline';
 import { blogSummaries } from '../data/blogSummaries';
-import NativeBannerAd from '../components/ads/NativeBannerAd';
+import BannerAd from '../components/ads/BannerAd';
+import LeaderboardAd from '../components/ads/LeaderboardAd';
 
 const Home: React.FC = () => {
   const features = [
@@ -98,8 +99,11 @@ const Home: React.FC = () => {
         🔥 NEW: 500+ Free Video Editing Assets Released! Create YouTube Thumbnails Instantly — Join 1000+ Creators
       </div>
 
-      {/* Top Banner Ad - High Visibility */}
-      <NativeBannerAd className="max-w-7xl mx-auto px-4" />
+      {/* Top Leaderboard Ad - High Visibility */}
+      <LeaderboardAd className="max-w-7xl mx-auto" />
+
+      {/* Top Banner Ad - Component removed to improve visible hero area */}
+      {/* <BannerAd className="max-w-7xl mx-auto px-4" /> */}
 
       {/* Enhanced gradient background with animated particles */}
       <div className="min-h-screen relative overflow-hidden bg-black">
@@ -278,11 +282,8 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Mid-Content Ad - Interstitial */}
-        <NativeBannerAd
-          label="Sponsored"
-          className="max-w-4xl mx-auto px-4"
-        />
+        {/* Mid-Content Ad - Removed per user request */}
+        {/* <BannerAd label="Sponsored" className="max-w-4xl mx-auto px-4" /> */}
 
 
         {/* Feature grid */}
@@ -502,9 +503,12 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+        {/* Bottom Leaderboard Ad */}
+        <LeaderboardAd className="max-w-7xl mx-auto mb-8" />
+
         {/* Bottom Ad - Before Footer */}
         {/* TODO: Replace 'placeholder-bot' with a new unique Ad Unit ID from your provider */}
-        <NativeBannerAd
+        <BannerAd
           adId="placeholder-bot"
           className="max-w-7xl mx-auto px-4 mb-20"
         />

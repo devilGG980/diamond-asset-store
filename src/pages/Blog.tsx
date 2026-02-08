@@ -13,7 +13,9 @@ import {
 } from '@heroicons/react/24/outline';
 import PageSEO from '../components/SEO/PageSEO';
 import { blogSummaries as blogPosts } from '../data/blogSummaries';
-import NativeBannerAd from '../components/ads/NativeBannerAd';
+import BannerAd from '../components/ads/BannerAd';
+import LeaderboardAd from '../components/ads/LeaderboardAd';
+import { getCategoryGradient } from '../utils/styleUtils';
 const Blog: React.FC = () => {
   // Popunder removed from listing page per user request
   const featuredPosts = blogPosts.filter(post => post.featured);
@@ -102,9 +104,12 @@ const Blog: React.FC = () => {
             </p>
           </motion.div>
 
+          {/* Top Leaderboard Ad */}
+          <LeaderboardAd className="mb-8" />
+
           {/* Featured Posts */}
           <section className="mb-16">
-            <NativeBannerAd className="mb-12" />
+            <BannerAd className="mb-12" />
             <h2 className="text-2xl font-bold text-white mb-8 flex items-center">
               <SparklesIcon className="w-6 h-6 mr-2 text-yellow-400" />
               Latest Articles
@@ -137,8 +142,11 @@ const Blog: React.FC = () => {
                           }}
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-6xl">
-                          {post.thumbnail || '📝'}
+                        <div className={`w-full h-full flex flex-col items-center justify-center p-4 bg-gradient-to-br ${getCategoryGradient(post.category)}`}>
+                          <div className="text-4xl mb-2">{post.thumbnail || '📝'}</div>
+                          <div className="text-white font-bold text-center leading-tight opacity-90 line-clamp-2">
+                            {post.title}
+                          </div>
                         </div>
                       )}
                       <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm px-2 py-1 rounded text-xs text-white">
@@ -243,8 +251,8 @@ const Blog: React.FC = () => {
               </Link>
             </div>
           </motion.section>
-        </div>
-      </div>
+        </div >
+      </div >
     </>
   );
 };

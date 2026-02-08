@@ -20,6 +20,7 @@ import {
   FaYoutube
 } from 'react-icons/fa';
 import PageSEO from '../components/SEO/PageSEO';
+import LeaderboardAd from '../components/ads/LeaderboardAd';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -130,6 +131,22 @@ const Contact: React.FC = () => {
         title="Contact Us - EditorVault Support"
         description="Get in touch with EditorVault. Support for creators, bug reports, and feature requests."
         keywords={['contact editorvault', 'support', 'customer service', 'bug report']}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          "name": "Contact Us",
+          "description": "Get in touch with EditorVault support.",
+          "url": "https://editorvault.web.app/contact",
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "EditorVault",
+            "email": "infomeryt0@gmail.com"
+          }
+        }}
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Contact', url: '/contact' }
+        ]}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header Section */}
@@ -407,6 +424,9 @@ const Contact: React.FC = () => {
             </motion.div>
           </div>
         </div>
+
+        {/* Bottom Leaderboard Ad */}
+        <LeaderboardAd className="mb-8" />
 
         {/* Additional Info */}
         <motion.div
