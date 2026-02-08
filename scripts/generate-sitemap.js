@@ -62,24 +62,39 @@ async function generateSitemapXml() {
 
     // Add Blog Posts dynamically
     try {
-      const blogSummariesPath = resolve(__dirname, '../src/data/blogSummaries.ts');
-      const blogContent = readFileSync(blogSummariesPath, 'utf8');
-      const idRegex = /id:\s*['"`]([^'"`]+)['"`]/g;
+      const blogFiles = [
+        resolve(__dirname, '../src/data/blogSummaries.ts'),
+        resolve(__dirname, '../src/data/importedBlogs.ts')
+      ];
 
-      // Try to match dates too if possible, but for now default to today
-      // In a real scenario, we'd parse the full object, but regex is faster for this script
+      const idRegex = /["\']?id["\']?\s*:\s*["'`]([^"'`]+)["'`]/g;
+      const blogIds = new Set(); // Use Set to avoid duplicates
 
-      let match;
       console.log('📝 Scanning for blog posts...');
-      while ((match = idRegex.exec(blogContent)) !== null) {
-        const blogId = match[1];
-        urls.push(createEntry(`${hostname}/blog/${blogId}`, '0.80', 'monthly'));
+
+      for (const blogFile of blogFiles) {
+        try {
+          const blogContent = readFileSync(blogFile, 'utf8');
+          let match;
+
+          while ((match = idRegex.exec(blogContent)) !== null) {
+            const blogId = match[1];
+            blogIds.add(blogId);
+          }
+        } catch (err) {
+          console.warn(`⚠️ Could not read ${blogFile}:`, err.message);
+        }
       }
-      // Manually add blog posts that might have been missed or if regex fails (safety)
-      // but regex should catch the IDs as they are standard string literals
+
+      // Convert Set to array and create sitemap entries
+      Array.from(blogIds).forEach(blogId => {
+        urls.push(createEntry(`${hostname}/blog/${blogId}`, '0.80', 'monthly'));
+      });
+
+      console.log(`✅ Found ${blogIds.size} unique blog posts`);
 
     } catch (err) {
-      console.warn('⚠️ Could not read blogSummaries.ts:', err.message);
+      console.warn('⚠️ Error scanning blog posts:', err.message);
     }
 
     // Generate XML content
